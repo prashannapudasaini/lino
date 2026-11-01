@@ -18,7 +18,7 @@ const Footer = () => {
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-            <Link to="/quote">
+            <Link to="/book-now">
               <Button size="md" variant="primary" className="w-full sm:w-auto tracking-wide">
                 Request Your Ride <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
@@ -32,7 +32,7 @@ const Footer = () => {
         </div>
 
         {/* Main Footer Columns */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
           {/* Brand Info */}
           <div className="lg:col-span-2 space-y-4">
             <Link to="/" className="flex items-center gap-3">
@@ -98,10 +98,7 @@ const Footer = () => {
                 <Link to="/service-areas" className="hover:text-luxury-gold transition-colors">Regional Service Areas</Link>
               </li>
               <li>
-                <Link to="/contact" className="hover:text-luxury-gold transition-colors">Contact & Inquiries</Link>
-              </li>
-              <li>
-                <Link to="/quote" className="text-luxury-gold font-medium hover:underline">Get a Quote</Link>
+                <Link to="/contact" className="hover:text-luxury-gold transition-colors">Contact & Dispatch</Link>
               </li>
             </ul>
           </div>
@@ -109,11 +106,11 @@ const Footer = () => {
           {/* Core Services */}
           <div>
             <h4 className="text-xs uppercase tracking-[0.2em] font-semibold text-luxury-textPrimary mb-4">
-              Services
+              Chauffeur Services
             </h4>
             <ul className="space-y-2.5 text-xs">
               <li>
-                <Link to="/services" className="hover:text-luxury-gold transition-colors">Airport Transportation</Link>
+                <Link to="/services" className="hover:text-luxury-gold transition-colors">Airport Transfers</Link>
               </li>
               <li>
                 <Link to="/services" className="hover:text-luxury-gold transition-colors">Corporate Travel</Link>
@@ -165,6 +162,28 @@ const Footer = () => {
           </div>
         </div>
 
+        {/* Industry Accreditation & Trust Strip */}
+        <div className="py-6 border-t border-luxury-border/60 my-8">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+            <div className="flex flex-col items-center justify-center p-3 rounded-xl bg-white/[0.02] border border-white/5">
+              <span className="font-serif text-sm font-semibold text-white tracking-wide">NLA Member</span>
+              <span className="text-[10px] text-zinc-400 mt-0.5">National Limousine Association</span>
+            </div>
+            <div className="flex flex-col items-center justify-center p-3 rounded-xl bg-white/[0.02] border border-white/5">
+              <span className="font-serif text-sm font-semibold text-white tracking-wide">USDOT & PA PUC</span>
+              <span className="text-[10px] text-zinc-400 mt-0.5">Licensed & Insured Passenger Carrier</span>
+            </div>
+            <div className="flex flex-col items-center justify-center p-3 rounded-xl bg-white/[0.02] border border-white/5">
+              <span className="font-serif text-sm font-semibold text-[#C5A46D] tracking-wide">FlightAware®</span>
+              <span className="text-[10px] text-zinc-400 mt-0.5">Integrated Live Radar Dispatch</span>
+            </div>
+            <div className="flex flex-col items-center justify-center p-3 rounded-xl bg-white/[0.02] border border-white/5">
+              <span className="font-serif text-sm font-semibold text-white tracking-wide">5.0 ★ Rating</span>
+              <span className="text-[10px] text-zinc-400 mt-0.5">Verified Executive Client Reviews</span>
+            </div>
+          </div>
+        </div>
+
         {/* Bottom Legal & Disclaimer */}
         <div className="pt-8 border-t border-luxury-border flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-luxury-textMuted">
           <div>
@@ -194,4 +213,3 @@ const Footer = () => {
 };
 
 export default Footer;
-

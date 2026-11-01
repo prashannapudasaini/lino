@@ -5,23 +5,28 @@ import { Plane, ArrowRight } from 'lucide-react';
 const airports = [
   {
     code: 'MDT',
-    name: 'Harrisburg International Airport'
+    name: 'Harrisburg International Airport',
+    rate: 'From $195'
   },
   {
     code: 'PHL',
-    name: 'Philadelphia International Airport'
+    name: 'Philadelphia International Airport',
+    rate: 'From $295'
   },
   {
     code: 'JFK',
-    name: 'John F. Kennedy International Airport'
+    name: 'John F. Kennedy International Airport',
+    rate: 'From $495'
   },
   {
     code: 'LGA',
-    name: 'LaGuardia Airport'
+    name: 'LaGuardia Airport',
+    rate: 'From $475'
   },
   {
     code: 'EWR',
-    name: 'Newark Liberty International Airport'
+    name: 'Newark Liberty International Airport',
+    rate: 'From $425'
   }
 ];
 
@@ -53,7 +58,7 @@ const AirportCoverage = () => {
             </h2>
 
             <p className="text-sm sm:text-base text-zinc-300 leading-relaxed font-normal max-w-md">
-              We provide reliable transportation to and from major airports, ensuring a smooth and stress-free journey.
+              We provide reliable transportation to and from major airports, ensuring a smooth and stress-free journey with all-inclusive pricing and flight monitoring.
             </p>
 
             <div className="pt-2">
@@ -67,7 +72,7 @@ const AirportCoverage = () => {
             </div>
           </div>
 
-          {/* Right Column: 5 Glass Airport Cards */}
+          {/* Right Column: 5 Glass Airport Cards with Flat Rates */}
           <div className="lg:col-span-7">
             {/* Desktop / Tablet Grid: 5 horizontal cards */}
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
@@ -75,19 +80,24 @@ const AirportCoverage = () => {
                 <Link
                   key={idx}
                   to="/airport-transportation"
-                  className="bg-white/[0.04] backdrop-blur-md border border-white/10 hover:border-[#C5A46D]/60 hover:bg-white/[0.08] rounded-2xl p-4 sm:p-5 flex flex-col justify-between transition-all duration-300 group min-h-[160px] shadow-lg"
+                  className="bg-white/[0.04] backdrop-blur-md border border-white/10 hover:border-[#C5A46D]/60 hover:bg-white/[0.08] rounded-2xl p-4 sm:p-5 flex flex-col justify-between transition-all duration-300 group min-h-[175px] shadow-lg"
                 >
-                  <div className="text-[#C5A46D] mb-3">
-                    <Plane className="w-5 h-5 -rotate-45 group-hover:scale-110 transition-transform" />
-                  </div>
-
                   <div>
+                    <div className="text-[#C5A46D] mb-3">
+                      <Plane className="w-5 h-5 -rotate-45 group-hover:scale-110 transition-transform" />
+                    </div>
+
                     <div className="font-mono text-xl sm:text-2xl font-bold text-white group-hover:text-[#C5A46D] transition-colors tracking-wide">
                       {airport.code}
                     </div>
                     <div className="text-[11px] sm:text-xs text-zinc-400 mt-1 leading-snug line-clamp-2">
                       {airport.name}
                     </div>
+                  </div>
+
+                  <div className="mt-3 pt-2.5 border-t border-white/10 flex items-center justify-between text-[11px]">
+                    <span className="text-zinc-400">Flat Rate</span>
+                    <span className="font-semibold text-[#C5A46D]">{airport.rate}</span>
                   </div>
                 </Link>
               ))}

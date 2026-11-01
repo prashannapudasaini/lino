@@ -1,18 +1,17 @@
 # Node / Frontend
-frontend/node_modules/
-frontend/dist/
-frontend/.env.local
+node_modules/
+dist/
+dist-ssr/
+*.local
+.env
+.env.*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Python / Backend
-backend/venv/
-backend/__pycache__/
-backend/*/__pycache__/
-backend/*/*/__pycache__/
-backend/*.db
-backend/.env
-*.pyc
-
-# OS
+# Editor & OS
+.vscode/
+.idea/
 .DS_Store
 Thumbs.db
-
+*.log

@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import Navbar from './components/common/Navbar';
 import Footer from './components/common/Footer';
 import LuxuryConciergeChat from './components/chatbot/LuxuryConciergeChat';
+import FloatingVipBar from './components/common/FloatingVipBar';
 
 // Public Pages
 import HomePage from './pages/HomePage';
@@ -61,6 +62,7 @@ const PublicLayout = () => {
       </main>
       <Footer />
       <LuxuryConciergeChat />
+      <FloatingVipBar />
     </div>
   );
 };
