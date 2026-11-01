@@ -35,7 +35,7 @@ const AboutPage = () => {
         title="Driven by Excellence. Defined by Comfort."
         subtitle="Discover a more refined approach to executive transportation."
         breadcrumb={[{ name: "About Us" }]}
-        backgroundImage="https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=2200&q=85"
+        backgroundImage="/images/custom/hero-jet-limo.jpg"
       />
 
       {/* Section 2: Our Story (Split Editorial Layout) */}
@@ -46,7 +46,7 @@ const AboutPage = () => {
             <div className="lg:col-span-5 relative">
               <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-luxury-border group">
                 <img
-                  src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1200&q=85"
+                  src="/images/custom/service-corporate.jpg"
                   alt="Professional executive chauffeur opening luxury sedan door"
                   className="w-full h-[480px] sm:h-[560px] object-cover object-center group-hover:scale-105 transition-transform duration-700 filter brightness-95"
                 />

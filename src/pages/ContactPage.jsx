@@ -52,7 +52,7 @@ const ContactPage = () => {
         title="We're Here to Assist Your Journey."
         subtitle="Our dispatch team and client concierge are at your service for corporate inquiries, custom regional itineraries, and reservation assistance."
         breadcrumb={[{ name: "Contact" }]}
-        backgroundImage="https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=2200&q=85"
+        backgroundImage="/images/custom/service-chauffeur.jpg"
       />
 
       {/* Main Contact Section */}

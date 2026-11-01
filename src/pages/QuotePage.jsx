@@ -11,7 +11,7 @@ const QuotePage = () => {
         title="Your Journey Begins Here."
         subtitle="Tell us about your transportation needs. Our team will review your request and provide a personalized response."
         breadcrumb={[{ name: "Book a Ride / Quote" }]}
-        backgroundImage="https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=2200&q=85"
+        backgroundImage="/images/custom/hero-jet-limo.jpg"
       />
 
       <section className="py-16 md:py-24 bg-[#0B0B0C]">

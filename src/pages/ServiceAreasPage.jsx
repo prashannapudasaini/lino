@@ -72,7 +72,7 @@ const ServiceAreasPage = () => {
         title="Wherever Your Journey Takes You."
         subtitle="Explore the locations and destinations served by Everest Executive Limo."
         breadcrumb={[{ name: "Service Areas" }]}
-        backgroundImage="https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=2200&q=85"
+        backgroundImage="/images/custom/service-chauffeur.jpg"
       />
 
       {/* 1. Introduction */}

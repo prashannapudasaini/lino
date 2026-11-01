@@ -11,8 +11,8 @@ const fleetData = [
     category: "Sedan",
     passengers: 3,
     luggage: 3,
-    image: "https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=1600&q=85",
-    interiorImage: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=1000&q=80",
+    image: "/images/custom/fleet-sedan.jpg",
+    interiorImage: "/images/custom/why-passenger.jpg",
     description: "The gold standard of executive mobility. Engineered for corporate executives, solo travelers, and couples who require acoustic quietness, handcrafted leather seating, and seamless mobile connectivity for work or rest.",
     features: [
       "Acoustic noise-insulated double glazing",
@@ -30,8 +30,8 @@ const fleetData = [
     category: "SUV",
     passengers: 6,
     luggage: 6,
-    image: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1600&q=85",
-    interiorImage: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1000&q=80",
+    image: "/images/custom/fleet-suv.jpg",
+    interiorImage: "/images/custom/service-events.jpg",
     description: "Commanding road authority and opulent first-class comfort. Boasting an extended wheelbase for massive luggage capacity, captain recliners, and panoramic visibility for corporate delegations and airport transfers.",
     features: [
       "Extended wheelbase with maximum luggage capacity",
@@ -49,8 +49,8 @@ const fleetData = [
     category: "Executive Van",
     passengers: 14,
     luggage: 12,
-    image: "https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=1600&q=85",
-    interiorImage: "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=1000&q=80",
+    image: "/images/custom/service-chauffeur.jpg",
+    interiorImage: "/images/custom/why-passenger.jpg",
     description: "A private jet cabin on wheels. Tailored for corporate board roadshows, executive delegations, and discerning group itineraries requiring full standing height, worktables, and unmatched luxury.",
     features: [
       "Full 6'4\" standing headroom cabin",
@@ -68,8 +68,8 @@ const fleetData = [
     category: "Limousine",
     passengers: 8,
     luggage: 6,
-    image: "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=1600&q=85",
-    interiorImage: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1000&q=80",
+    image: "/images/custom/hero-jet-limo.jpg",
+    interiorImage: "/images/custom/service-events.jpg",
     description: "Timeless elegance and celebratory prestige. Tailored for milestone galas, black-tie celebrations, weddings, and high-profile VIP arrivals where an unforgettable entrance is paramount.",
     features: [
       "Custom J-lounge seating in fine stitched leather",
@@ -97,7 +97,7 @@ const FleetPage = () => {
         title="Travel in a Class of Its Own."
         subtitle="Discover the comfort and elegance of our executive transportation fleet."
         breadcrumb={[{ name: "Our Fleet" }]}
-        backgroundImage="https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=2200&q=85"
+        backgroundImage="/images/custom/fleet-escalade-front.jpg"
       />
 
       {/* Fleet Introduction & Filter */}
