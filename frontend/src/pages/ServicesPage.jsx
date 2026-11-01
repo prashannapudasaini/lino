@@ -10,7 +10,7 @@ const services = [
     title: "Airport Transfers",
     layout: "image-left",
     icon: Plane,
-    image: "https://images.unsplash.com/photo-1508873696983-2df5293cb395?auto=format&fit=crop&w=1400&q=85",
+    image: "/images/custom/service-airport.jpg",
     description: "Flawless arrivals and timely departures for all major regional commercial hubs including MDT, PHL, JFK, LGA, and EWR, as well as private aviation FBOs. Your chauffeur coordinates flight status, provides terminal meet-and-greet, and handles all luggage.",
     benefits: [
       "Curbside or inside baggage-claim meet and greet",
@@ -25,7 +25,7 @@ const services = [
     title: "Corporate Transportation",
     layout: "image-right",
     icon: Briefcase,
-    image: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1400&q=85",
+    image: "/images/custom/service-corporate.jpg",
     description: "Engineered for executives, board members, and business delegations requiring seamless punctuality, mobile office productivity, and absolute discretion between meetings and financial centers.",
     benefits: [
       "Strict non-disclosure standards for total meeting confidentiality",
@@ -40,7 +40,7 @@ const services = [
     title: "Executive Travel",
     layout: "full-width-overlay",
     icon: ShieldCheck,
-    image: "https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=1800&q=85",
+    image: "/images/custom/why-passenger.jpg",
     description: "Premier intercity travel connecting Central Pennsylvania, New York City, Philadelphia, New Jersey, and Washington D.C. Avoid the hassles of regional flight delays and crowded train stations with private door-to-door luxury.",
     benefits: [
       "Direct point-to-point transit with zero layovers or security queues",
@@ -55,7 +55,7 @@ const services = [
     title: "Private Chauffeur Service",
     layout: "image-left",
     icon: Clock,
-    image: "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=1400&q=85",
+    image: "/images/custom/service-chauffeur.jpg",
     description: "Dedicated as-directed hourly service with a luxury vehicle and driver on continuous standby. Depart at your leisure, alter stops dynamically, and enjoy total flexibility without parking concerns.",
     benefits: [
       "Chauffeur remains on-site throughout your schedule",
@@ -70,7 +70,7 @@ const services = [
     title: "Special Events",
     layout: "image-right",
     icon: Award,
-    image: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1400&q=85",
+    image: "/images/custom/service-events.jpg",
     description: "Red-carpet transportation for milestone galas, black-tie celebrations, weddings, and high-profile private occasions. We coordinate with event planners to ensure every arrival is memorable and polished.",
     benefits: [
       "Flawlessly detailed luxury sedans, SUVs, and Sprinters",
@@ -85,7 +85,7 @@ const services = [
     title: "City Tours",
     layout: "asymmetric-card",
     icon: Compass,
-    image: "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=1400&q=85",
+    image: "/images/custom/fleet-suv.jpg",
     description: "Curated regional private tours exploring the landmarks of Pennsylvania, historic Philadelphia, Manhattan sights, or the scenic rolling hills of Lancaster and Hershey in uncompromising luxury.",
     benefits: [
       "Customized private tour pacing without rigid group timetables",
@@ -105,7 +105,7 @@ const ServicesPage = () => {
         title="Exceptional Transportation for Every Occasion."
         subtitle="Professional chauffeur services designed around your journey."
         breadcrumb={[{ name: "Our Services" }]}
-        backgroundImage="https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=2200&q=85"
+        backgroundImage="/images/custom/hero-jet-limo.jpg"
       />
 
       {/* Services List with Distinct Alternating Layouts */}

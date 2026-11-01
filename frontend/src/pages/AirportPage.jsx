@@ -75,7 +75,7 @@ const AirportPage = () => {
         title="Airport Transfers, Elevated."
         subtitle="Enjoy a smooth and comfortable journey with professional executive transportation."
         breadcrumb={[{ name: "Airport Transportation" }]}
-        backgroundImage="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=2200&q=85"
+        backgroundImage="/images/custom/hero-jet-limo.jpg"
       />
 
       {/* 2. Introduction */}
@@ -163,7 +163,7 @@ const AirportPage = () => {
             <div className="lg:col-span-6 relative">
               <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-luxury-border group">
                 <img
-                  src="https://images.unsplash.com/photo-1512428559087-560fa5ceab42?auto=format&fit=crop&w=1200&q=85"
+                  src="/images/custom/service-airport.jpg"
                   alt="Airport terminal pickup experience"
                   className="w-full h-[440px] sm:h-[500px] object-cover object-center group-hover:scale-105 transition-transform duration-700 filter brightness-95"
                 />
