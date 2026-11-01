@@ -1,78 +1,83 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { Armchair, UserCheck, Clock, ShieldCheck } from 'lucide-react';
 
-const stats = [
+const features = [
   {
-    value: "10+",
-    label: "Years of Excellence"
+    icon: Armchair,
+    title: 'Comfort & Convenience',
+    description: 'Relax and enjoy the journey.'
   },
   {
-    value: "50K+",
-    label: "Happy Clients"
+    icon: UserCheck,
+    title: 'Professional Service',
+    description: 'Experienced and courteous chauffeurs.'
   },
   {
-    value: "99.9%",
-    label: "On-Time Rate"
+    icon: Clock,
+    title: 'Dependable Transportation',
+    description: 'Always here when you need us.'
+  },
+  {
+    icon: ShieldCheck,
+    title: 'Personalized Travel',
+    description: 'Tailored to your specific needs.'
   }
 ];
 
 const WhyChooseUs = () => {
   return (
-    <section className="relative py-28 md:py-36 bg-[#0B0B0C] text-white overflow-hidden border-t border-[#1E1E22]">
-      {/* Background: Majestic Himalayan Mountain Peaks with Dark Atmospheric Twilight */}
-      <div className="absolute inset-0 z-0">
-        <img
-          src="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=2400&q=85"
-          alt="Majestic snowy Himalayan mountain peaks under dramatic twilight"
-          className="w-full h-full object-cover object-center filter brightness-[0.40] contrast-[1.25]"
-          loading="lazy"
-        />
-        {/* Subtle gradients to keep text legible while maintaining cinematic mountain clarity */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0B0B0C]/90 via-[#0B0B0C]/60 to-[#0B0B0C]/80" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0B0B0C] via-transparent to-[#0B0B0C]/80" />
-      </div>
+    <section className="py-20 md:py-28 bg-[#F7F5F0] text-[#141416] overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+          {/* Left Column: Eyebrow, Heading, Description, 2x2 Feature Grid */}
+          <div className="lg:col-span-7 space-y-6">
+            <div>
+              <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.25em] text-[#9E7D47] block mb-3">
+                WHY CHOOSE EVEREST
+              </span>
+              <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal tracking-tight text-[#141416] leading-[1.12]">
+                More Than a Ride —<br />
+                A Premium Experience
+              </h2>
+            </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-          {/* Left Column: Heading & Gold CTA Button */}
-          <div className="lg:col-span-6 space-y-6">
-            <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#C5A46D] block">
-              WHY CHOOSE EVEREST
-            </span>
+            <p className="text-sm sm:text-base text-zinc-600 leading-relaxed font-normal max-w-xl">
+              We are committed to providing a superior travel experience with, professional service, luxury vehicles, and a focus on your comfort.
+            </p>
 
-            <h2 className="font-serif text-3xl sm:text-5xl md:text-6xl font-normal tracking-tight text-white leading-[1.08]">
-              More Than a Ride —<br />
-              <span className="text-white">A Premium Experience</span>
-            </h2>
-
-            <div className="pt-2">
-              <Link
-                to="/fleet"
-                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-[#C5A46D] hover:bg-[#D5B982] text-[#0B0B0C] text-xs font-semibold uppercase tracking-wider transition-all duration-200 shadow-luxury-gold hover:shadow-luxury-glow active:scale-95"
-              >
-                <span>Show Fleet</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
+            {/* 2x2 Circular Features Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4">
+              {features.map((feat, idx) => {
+                const IconComp = feat.icon;
+                return (
+                  <div key={idx} className="flex items-start gap-4">
+                    <div className="w-11 h-11 rounded-full border border-[#C5A46D] bg-[#C5A46D]/10 flex items-center justify-center text-[#9E7D47] shrink-0">
+                      <IconComp className="w-5 h-5 stroke-[1.6]" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm sm:text-base font-semibold text-[#141416] leading-tight">
+                        {feat.title}
+                      </h3>
+                      <p className="text-xs text-zinc-500 mt-1 leading-relaxed">
+                        {feat.description}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
-          {/* Right Column: Three Large Gold Statistics with Vertical Dividers */}
-          <div className="lg:col-span-6">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 divide-y sm:divide-y-0 sm:divide-x divide-white/15">
-              {stats.map((item, idx) => (
-                <div
-                  key={idx}
-                  className={`pt-4 sm:pt-0 ${idx !== 0 ? 'sm:pl-8' : ''} space-y-1`}
-                >
-                  <div className="font-serif text-4xl sm:text-5xl lg:text-6xl font-normal text-[#C5A46D] tracking-tight">
-                    {item.value}
-                  </div>
-                  <div className="text-xs sm:text-sm text-[#A7A5A0] font-normal leading-snug">
-                    {item.label}
-                  </div>
-                </div>
-              ))}
+          {/* Right Column: Passenger in Executive Leather Rear Cabin */}
+          <div className="lg:col-span-5 relative">
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-black/10 bg-zinc-900 group">
+              <img
+                src="/images/custom/why-passenger.jpg"
+                alt="Executive passenger relaxing in luxury leather chauffeur cabin"
+                className="w-full h-[400px] sm:h-[480px] lg:h-[520px] object-cover object-center group-hover:scale-105 transition-transform duration-700 filter brightness-95"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
             </div>
           </div>
         </div>
