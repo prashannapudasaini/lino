@@ -1,88 +1,113 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ShieldCheck, Award, Users, Compass, ArrowRight, Clock, Star } from 'lucide-react';
+import { ShieldCheck, Clock, Armchair, HeartHandshake, ArrowRight, CheckCircle2 } from 'lucide-react';
 import PageHero from '../components/common/PageHero';
-import SectionHeading from '../components/common/SectionHeading';
-import Button from '../components/common/Button';
-import CtaBanner from '../components/home/CtaBanner';
+
+const values = [
+  {
+    title: "Excellence",
+    icon: ShieldCheck,
+    description: "An unwavering dedication to immaculate vehicle presentation, flawless conduct, and exceeding the highest expectations of executive ground travel."
+  },
+  {
+    title: "Reliability",
+    icon: Clock,
+    description: "Dependable punctuality backed by proactive route reconnaissance, airport flight monitoring, and 24/7 dedicated dispatch coordination."
+  },
+  {
+    title: "Comfort",
+    icon: Armchair,
+    description: "Quiet acoustic cabins, climate pre-conditioning, fine leather seating, and a serene atmosphere designed for productivity or restful repose."
+  },
+  {
+    title: "Personal Attention",
+    icon: HeartHandshake,
+    description: "Tailored travel arrangements that accommodate your exact schedule, luggage needs, route preferences, and confidentiality requirements."
+  }
+];
 
 const AboutPage = () => {
   return (
-    <div>
+    <div className="bg-luxury-bg text-white">
+      {/* Section 1: About Hero */}
       <PageHero
-        eyebrow="Company Overview"
-        title="Distinguished Ground Travel Designed for Discerning Clients"
-        subtitle="Everest Executive Limo LLC delivers refined executive chauffeur services, airport transfers, and private corporate mobility across the Mid-Atlantic and Tri-State corridors."
+        eyebrow="ABOUT EVEREST"
+        title="Driven by Excellence. Defined by Comfort."
+        subtitle="Discover a more refined approach to executive transportation."
         breadcrumb={[{ name: "About Us" }]}
-        backgroundImage="https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=1600&q=80"
+        backgroundImage="https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=2200&q=85"
       />
 
-      {/* Brand Story Section */}
-      <section className="py-20 md:py-28 bg-luxury-bg">
+      {/* Section 2: Our Story (Split Editorial Layout) */}
+      <section className="py-20 md:py-28 bg-[#0B0B0C]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-            {/* Story Text */}
+            {/* Left: Professional Chauffeur / Executive Transportation Photograph */}
+            <div className="lg:col-span-5 relative">
+              <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-luxury-border group">
+                <img
+                  src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1200&q=85"
+                  alt="Professional executive chauffeur opening luxury sedan door"
+                  className="w-full h-[480px] sm:h-[560px] object-cover object-center group-hover:scale-105 transition-transform duration-700 filter brightness-95"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent" />
+                
+                <div className="absolute bottom-6 left-6 right-6 p-5 rounded-2xl bg-black/80 backdrop-blur-md border border-white/10">
+                  <span className="text-[10px] uppercase tracking-[0.25em] text-luxury-gold font-bold block mb-1">
+                    WHITE-GLOVE DISCRETION
+                  </span>
+                  <p className="text-xs text-zinc-300 leading-relaxed font-normal">
+                    Formally vetted chauffeurs bound by non-disclosure ethics, ensuring complete privacy for corporate leadership.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: Editorial Narrative */}
             <div className="lg:col-span-7 space-y-6">
               <div className="inline-flex items-center gap-2">
-                <span className="w-6 h-[1px] bg-luxury-gold/60 inline-block"></span>
-                <span className="text-xs uppercase tracking-[0.25em] font-semibold text-luxury-gold">
-                  Our Heritage & Foundation
+                <span className="w-8 h-[1px] bg-luxury-gold inline-block"></span>
+                <span className="text-[11px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-luxury-gold">
+                  OUR STORY
                 </span>
               </div>
 
-              <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal text-luxury-textPrimary leading-tight">
-                Born From a Dedication to Discretion, Punctuality & Comfort.
+              <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal tracking-tight text-white leading-[1.15]">
+                More Than Transportation.<br />
+                <span className="italic text-luxury-gold font-serif">An Experience.</span>
               </h2>
 
-              <p className="text-sm sm:text-base text-luxury-textSecondary leading-relaxed">
-                Headquartered in Pennsylvania, <strong>Everest Executive Limo LLC</strong> was established to provide an executive alternative to unreliable rideshares and impersonal transport services.
+              <p className="text-sm sm:text-base text-zinc-300 leading-relaxed font-normal">
+                Everest Executive Limo LLC was created to bring calm, precision, and sophistication to executive ground travel. We believe ground transportation should never feel transactional; it should be a seamless continuation of your professional standards and personal comfort.
               </p>
 
-              <p className="text-sm sm:text-base text-luxury-textSecondary leading-relaxed">
-                Whether transporting corporate leadership to high-stakes board meetings in Manhattan, escorting international travelers to MDT, PHL, or JFK, or orchestrating seamless logistics for milestone celebrations, we approach every mile with obsessive preparation.
+              <p className="text-sm sm:text-base text-zinc-300 leading-relaxed font-normal">
+                Based in Pennsylvania and serving the entire Mid-Atlantic corridor — including New York, New Jersey, and Washington D.C. — we specialize in high-touch airport transfers, corporate roadshows, and private charters where punctuality, discretion, and vehicle cleanliness are paramount.
               </p>
 
-              {/* Core Pillars */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
-                <div className="bg-luxury-surface border border-luxury-border p-4 rounded-xl">
-                  <h4 className="text-sm font-semibold text-luxury-textPrimary mb-1 flex items-center gap-2">
-                    <ShieldCheck className="w-4 h-4 text-luxury-gold" />
-                    Strict Chauffeur Standards
-                  </h4>
-                  <p className="text-xs text-luxury-textSecondary">
-                    Discreet, professionally vetted chauffeurs trained in non-disclosure and hospitality.
-                  </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                <div className="p-4 rounded-xl bg-luxury-surface border border-luxury-border flex items-start gap-3">
+                  <CheckCircle2 className="w-5 h-5 text-luxury-gold shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="text-xs font-semibold uppercase tracking-wider text-white">
+                      Obsessive Punctuality
+                    </h4>
+                    <p className="text-xs text-zinc-400 mt-1">
+                      Chauffeurs staged 15 minutes before scheduled pickup times.
+                    </p>
+                  </div>
                 </div>
 
-                <div className="bg-luxury-surface border border-luxury-border p-4 rounded-xl">
-                  <h4 className="text-sm font-semibold text-luxury-textPrimary mb-1 flex items-center gap-2">
-                    <Award className="w-4 h-4 text-luxury-gold" />
-                    Concierge Maintained Fleet
-                  </h4>
-                  <p className="text-xs text-luxury-textSecondary">
-                    Immaculately detailed, mechanically certified luxury sedans, SUVs, and Sprinters.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Visual Photography Composition */}
-            <div className="lg:col-span-5 relative">
-              <div className="relative rounded-2xl overflow-hidden border border-luxury-border shadow-2xl">
-                <img
-                  src="https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=1000&q=80"
-                  alt="Everest Executive Sedan Interior Craftsmanship"
-                  className="w-full h-[450px] object-cover object-center filter brightness-95"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-luxury-bg/90 via-transparent to-transparent" />
-                
-                <div className="absolute bottom-6 left-6 right-6 p-4 rounded-xl bg-luxury-bg/85 backdrop-blur-md border border-luxury-border">
-                  <span className="text-[10px] uppercase tracking-wider text-luxury-gold font-bold block mb-1">
-                    Executive Promise
-                  </span>
-                  <p className="text-xs text-luxury-textPrimary font-serif italic">
-                    "Every journey is personalized to your schedule, comfort, and peace of mind."
-                  </p>
+                <div className="p-4 rounded-xl bg-luxury-surface border border-luxury-border flex items-start gap-3">
+                  <CheckCircle2 className="w-5 h-5 text-luxury-gold shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="text-xs font-semibold uppercase tracking-wider text-white">
+                      Immaculate Vehicles
+                    </h4>
+                    <p className="text-xs text-zinc-400 mt-1">
+                      Deep sanitization, bottled spring water, and in-cabin charging.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -90,87 +115,145 @@ const AboutPage = () => {
         </div>
       </section>
 
-      {/* Service Philosophy */}
-      <section className="py-20 md:py-28 bg-luxury-surface border-y border-luxury-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionHeading
-            eyebrow="Our Commitments"
-            title="The Principles That Guide Every Mile"
-            subtitle="We hold ourselves to standards that exceed routine passenger transportation."
-            align="center"
+      {/* Section 3: Our Mission (Full-width Dark Section with Background Image) */}
+      <section className="relative py-24 md:py-32 bg-[#151517] overflow-hidden border-y border-luxury-border">
+        <div className="absolute inset-0 z-0">
+          <img
+            src="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=2200&q=85"
+            alt="Everest Himalayan Mountain Vista"
+            className="w-full h-full object-cover object-center filter brightness-[0.22] contrast-[1.2]"
+            loading="lazy"
           />
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-luxury-bg border border-luxury-border rounded-xl p-8 hover:border-luxury-gold/40 transition-colors">
-              <div className="w-12 h-12 rounded-xl bg-luxury-card border border-luxury-border flex items-center justify-center text-luxury-gold mb-6">
-                <Clock className="w-6 h-6" />
-              </div>
-              <h3 className="font-serif text-2xl font-normal text-luxury-textPrimary mb-3">
-                Precision & Punctuality
-              </h3>
-              <p className="text-xs sm:text-sm text-luxury-textSecondary leading-relaxed">
-                Timing is paramount for executive travel. Our dispatch team pre-monitors traffic flows, highway construction, and inbound flight schedules to arrive 15 minutes ahead of scheduled pickup.
-              </p>
-            </div>
-
-            <div className="bg-luxury-bg border border-luxury-border rounded-xl p-8 hover:border-luxury-gold/40 transition-colors">
-              <div className="w-12 h-12 rounded-xl bg-luxury-card border border-luxury-border flex items-center justify-center text-luxury-gold mb-6">
-                <ShieldCheck className="w-6 h-6" />
-              </div>
-              <h3 className="font-serif text-2xl font-normal text-luxury-textPrimary mb-3">
-                Privacy & Confidentiality
-              </h3>
-              <p className="text-xs sm:text-sm text-luxury-textSecondary leading-relaxed">
-                Whether you are conducting sensitive corporate phone calls or resting between meetings, our chauffeurs uphold strict discretion and non-disclosure standards at all times.
-              </p>
-            </div>
-
-            <div className="bg-luxury-bg border border-luxury-border rounded-xl p-8 hover:border-luxury-gold/40 transition-colors">
-              <div className="w-12 h-12 rounded-xl bg-luxury-card border border-luxury-border flex items-center justify-center text-luxury-gold mb-6">
-                <Compass className="w-6 h-6" />
-              </div>
-              <h3 className="font-serif text-2xl font-normal text-luxury-textPrimary mb-3">
-                Seamless Communication
-              </h3>
-              <p className="text-xs sm:text-sm text-luxury-textSecondary leading-relaxed">
-                From your initial quote inquiry to arrival at your destination, you receive clear confirmations, chauffeur contact information, and rapid dispatch support.
-              </p>
-            </div>
-          </div>
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0B0B0C] via-[#0B0B0C]/90 to-[#0B0B0C]/80" />
         </div>
-      </section>
 
-      {/* Fleet Standards Strip */}
-      <section className="py-20 bg-luxury-bg">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
-          <span className="text-xs uppercase tracking-[0.25em] font-semibold text-luxury-gold">
-            Fleet Safety & Cleanliness
-          </span>
-          <h2 className="font-serif text-3xl sm:text-4xl font-normal text-luxury-textPrimary">
-            Zero Compromise on Fleet Integrity
+        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="inline-flex items-center gap-2 mb-3">
+            <span className="w-6 h-[1px] bg-luxury-gold inline-block"></span>
+            <span className="text-[11px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-luxury-gold">
+              OUR COMMITMENT
+            </span>
+            <span className="w-6 h-[1px] bg-luxury-gold inline-block"></span>
+          </div>
+
+          <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal text-white mb-6 tracking-tight">
+            Our Mission
           </h2>
-          <p className="text-sm sm:text-base text-luxury-textSecondary leading-relaxed max-w-3xl mx-auto">
-            Our luxury sedans, premium SUVs, Mercedes-Benz Sprinters, and stretch limousines undergo regular scheduled maintenance, interior antibacterial sanitization, and cosmetic detailing so your vehicle always reflects excellence.
+
+          <p className="font-serif text-lg sm:text-2xl text-zinc-200 leading-relaxed italic max-w-3xl mx-auto font-normal">
+            "To deliver comfortable, dependable, and meticulously planned executive transportation that honors our clients' time, safeguards their peace of mind, and sets an uncompromised benchmark for luxury chauffeur service."
           </p>
-          <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link to="/fleet">
-              <Button size="md" variant="primary">
-                Explore The Fleet <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
-            </Link>
-            <Link to="/contact">
-              <Button size="md" variant="secondary">
-                Contact Management
-              </Button>
-            </Link>
+        </div>
+      </section>
+
+      {/* Section 4: Our Values (Four Elegant Value Blocks) */}
+      <section className="py-20 md:py-28 bg-[#0B0B0C]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <div className="inline-flex items-center gap-2 mb-3">
+              <span className="w-6 h-[1px] bg-luxury-gold inline-block"></span>
+              <span className="text-[11px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-luxury-gold">
+                FOUNDATIONAL PILLARS
+              </span>
+              <span className="w-6 h-[1px] bg-luxury-gold inline-block"></span>
+            </div>
+
+            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal tracking-tight text-white leading-[1.15] mb-4">
+              Our Core Values
+            </h2>
+
+            <p className="text-sm text-zinc-400 font-normal">
+              Four enduring principles that guide every dispatch, every client interaction, and every journey.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {values.map((v, i) => {
+              const IconComp = v.icon;
+              return (
+                <div
+                  key={i}
+                  className="bg-luxury-card border border-luxury-border rounded-2xl p-7 flex flex-col justify-between hover:border-luxury-gold/50 transition-all duration-300 shadow-luxury group hover:-translate-y-1"
+                >
+                  <div>
+                    <div className="w-12 h-12 rounded-xl bg-luxury-surface border border-luxury-gold/30 flex items-center justify-center text-luxury-gold mb-6 group-hover:border-luxury-gold group-hover:bg-luxury-gold/10 transition-colors shadow-sm">
+                      <IconComp className="w-5 h-5" />
+                    </div>
+
+                    <h3 className="font-serif text-xl font-normal text-white mb-2 group-hover:text-luxury-gold transition-colors">
+                      {v.title}
+                    </h3>
+
+                    <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed font-normal">
+                      {v.description}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      <CtaBanner />
+      {/* Section 5: The Experience (Large Image-Led Composition) */}
+      <section className="py-20 md:py-28 bg-[#151517] border-t border-luxury-border">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+            <div className="lg:col-span-6 space-y-6">
+              <div className="inline-flex items-center gap-2">
+                <span className="w-8 h-[1px] bg-luxury-gold inline-block"></span>
+                <span className="text-[11px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-luxury-gold">
+                  THE EXPERIENCE
+                </span>
+              </div>
+
+              <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal tracking-tight text-white leading-[1.15]">
+                Every Detail Matters.
+              </h2>
+
+              <p className="text-sm sm:text-base text-zinc-300 leading-relaxed font-normal">
+                True executive luxury is revealed in the unspoken details: the gentle door closure, the perfectly pre-chilled bottled spring water, the quiet acceleration that allows you to prepare for a major presentation without distraction.
+              </p>
+
+              <p className="text-sm sm:text-base text-zinc-300 leading-relaxed font-normal">
+                We continuously inspect our fleet mechanically and cosmetically, train our team in defensive driving and discreet protocol, and ensure every passenger arrives refreshed and poised.
+              </p>
+            </div>
+
+            <div className="lg:col-span-6 relative">
+              <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-luxury-border group">
+                <img
+                  src="https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=1200&q=85"
+                  alt="Luxury vehicle rear executive seating craftsmanship"
+                  className="w-full h-[400px] sm:h-[480px] object-cover object-center group-hover:scale-105 transition-transform duration-700 filter brightness-95"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Section 6: CTA */}
+      <section className="py-20 md:py-24 bg-[#0B0B0C] border-t border-luxury-border text-center">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal text-white mb-4 tracking-tight">
+            Experience the Everest Difference.
+          </h2>
+          <p className="text-sm sm:text-base text-zinc-400 max-w-xl mx-auto mb-8 font-normal">
+            Allow us to elevate your next journey with dependable, refined executive ground transportation.
+          </p>
+          <Link
+            to="/book-now"
+            className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-luxury-gold text-luxury-bg font-semibold text-xs sm:text-sm uppercase tracking-wider hover:bg-luxury-goldHover transition-all shadow-luxury-gold hover:shadow-luxury-glow"
+          >
+            <span>Book Your Ride</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+      </section>
     </div>
   );
 };
 
 export default AboutPage;
-

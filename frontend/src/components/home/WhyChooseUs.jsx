@@ -1,84 +1,78 @@
 import React from 'react';
-import { Armchair, UserCheck, Clock, Compass } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
 
-const benefits = [
+const stats = [
   {
-    icon: Armchair,
-    title: "Comfort & Convenience",
-    desc: "Relax and enjoy the journey."
+    value: "10+",
+    label: "Years of Excellence"
   },
   {
-    icon: UserCheck,
-    title: "Professional Service",
-    desc: "Experienced and courteous chauffeurs."
+    value: "50K+",
+    label: "Happy Clients"
   },
   {
-    icon: Clock,
-    title: "Dependable Transportation",
-    desc: "Always here when you need us."
-  },
-  {
-    icon: Compass,
-    title: "Personalized Travel",
-    desc: "Tailored to your specific needs."
+    value: "99.9%",
+    label: "On-Time Rate"
   }
 ];
 
 const WhyChooseUs = () => {
   return (
-    <section className="py-20 md:py-24 bg-[#F7F5F0] text-[#141416] relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
-          {/* Left Column: Content & 4 Features */}
-          <div className="lg:col-span-6 space-y-8">
-            <div>
-              <span className="text-[10px] sm:text-xs uppercase tracking-[0.25em] font-semibold text-[#8C7449] block mb-2">
-                WHY CHOOSE EVEREST
-              </span>
+    <section className="relative py-28 md:py-36 bg-[#0B0B0C] text-white overflow-hidden border-t border-[#1E1E22]">
+      {/* Background: Majestic Himalayan Mountain Peaks with Dark Atmospheric Twilight */}
+      <div className="absolute inset-0 z-0">
+        <img
+          src="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=2400&q=85"
+          alt="Majestic snowy Himalayan mountain peaks under dramatic twilight"
+          className="w-full h-full object-cover object-center filter brightness-[0.40] contrast-[1.25]"
+          loading="lazy"
+        />
+        {/* Subtle gradients to keep text legible while maintaining cinematic mountain clarity */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0B0B0C]/90 via-[#0B0B0C]/60 to-[#0B0B0C]/80" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0B0B0C] via-transparent to-[#0B0B0C]/80" />
+      </div>
 
-              <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal tracking-tight text-[#141416] leading-[1.15] mb-4">
-                More Than a Ride —<br />
-                A Premium Experience
-              </h2>
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+          {/* Left Column: Heading & Gold CTA Button */}
+          <div className="lg:col-span-6 space-y-6">
+            <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#C5A46D] block">
+              WHY CHOOSE EVEREST
+            </span>
 
-              <p className="text-xs sm:text-sm text-zinc-600 leading-relaxed font-normal max-w-lg">
-                We are committed to providing a superior travel experience with professional service, luxury vehicles, and a focus on your comfort.
-              </p>
-            </div>
+            <h2 className="font-serif text-3xl sm:text-5xl md:text-6xl font-normal tracking-tight text-white leading-[1.08]">
+              More Than a Ride —<br />
+              <span className="text-white">A Premium Experience</span>
+            </h2>
 
-            {/* 4 Feature Points in 2x2 Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
-              {benefits.map((item, idx) => {
-                const IconComponent = item.icon;
-                return (
-                  <div key={idx} className="flex items-start gap-3.5">
-                    <div className="w-10 h-10 rounded-full border border-[#C5A46D] flex items-center justify-center text-[#8C7449] shrink-0 bg-white/60 shadow-sm">
-                      <IconComponent className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-semibold text-[#141416] tracking-wide">
-                        {item.title}
-                      </h4>
-                      <p className="text-xs text-zinc-500 mt-0.5 leading-snug">
-                        {item.desc}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
+            <div className="pt-2">
+              <Link
+                to="/fleet"
+                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-[#C5A46D] hover:bg-[#D5B982] text-[#0B0B0C] text-xs font-semibold uppercase tracking-wider transition-all duration-200 shadow-luxury-gold hover:shadow-luxury-glow active:scale-95"
+              >
+                <span>Show Fleet</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
             </div>
           </div>
 
-          {/* Right Column: High-Res Passenger Interior Cabin Photography */}
-          <div className="lg:col-span-6 relative">
-            <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-zinc-200">
-              <img
-                src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=1200&q=85"
-                alt="Executive passenger relaxing in luxury chauffeur cabin"
-                className="w-full h-[380px] sm:h-[460px] object-cover object-center filter brightness-95"
-                loading="lazy"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+          {/* Right Column: Three Large Gold Statistics with Vertical Dividers */}
+          <div className="lg:col-span-6">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 divide-y sm:divide-y-0 sm:divide-x divide-white/15">
+              {stats.map((item, idx) => (
+                <div
+                  key={idx}
+                  className={`pt-4 sm:pt-0 ${idx !== 0 ? 'sm:pl-8' : ''} space-y-1`}
+                >
+                  <div className="font-serif text-4xl sm:text-5xl lg:text-6xl font-normal text-[#C5A46D] tracking-tight">
+                    {item.value}
+                  </div>
+                  <div className="text-xs sm:text-sm text-[#A7A5A0] font-normal leading-snug">
+                    {item.label}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>

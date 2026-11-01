@@ -1,8 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import PageHero from '../components/common/PageHero';
 
-const PrivacyTermsPage = () => {
-  const [activeTab, setActiveTab] = useState('privacy');
+const PrivacyTermsPage = ({ defaultTab }) => {
+  const location = useLocation();
+  const initialTab = defaultTab || (location.pathname.includes('term') ? 'terms' : 'privacy');
+  const [activeTab, setActiveTab] = useState(initialTab);
+
+  useEffect(() => {
+    if (defaultTab) {
+      setActiveTab(defaultTab);
+    } else if (location.pathname.includes('term')) {
+      setActiveTab('terms');
+    } else {
+      setActiveTab('privacy');
+    }
+  }, [location.pathname, defaultTab]);
 
   return (
     <div>
@@ -58,8 +71,8 @@ const PrivacyTermsPage = () => {
                 <ul className="list-disc pl-5 space-y-1.5 mt-2">
                   <li>Preparing and delivering your personalized executive transportation quotation.</li>
                   <li>Coordinating dispatch schedules, route planning, and assigned chauffeur logistics.</li>
-                  <li>Tracking commercial flight arrivals when flight details are provided.</li>
-                  <li>Direct customer service communication regarding your itinerary.</li>
+                  <li>Reviewing airport flight information when flight details are provided by the client.</li>
+                  <li>Direct customer service communication regarding your itinerary and preferences.</li>
                 </ul>
                 <p className="mt-2">
                   We do not sell, rent, monetize, or disclose your personal information to third-party marketing companies.
@@ -69,7 +82,7 @@ const PrivacyTermsPage = () => {
               <div>
                 <h3 className="font-serif text-2xl text-luxury-textPrimary mb-3">3. Data Security & Storage</h3>
                 <p>
-                  We implement industry-standard technical measures, secure servers, and encrypted protocols to safeguard the personal information submitted through our quotation portal. Access is restricted to authorized dispatch coordinators and operations personnel.
+                  We implement industry-standard technical measures, secure servers, and encrypted protocols to safeguard the personal information submitted through our quotation portal. Access is strictly restricted to authorized dispatch coordinators and operations personnel.
                 </p>
               </div>
 
@@ -100,16 +113,23 @@ const PrivacyTermsPage = () => {
               </div>
 
               <div>
-                <h3 className="font-serif text-2xl text-luxury-textPrimary mb-3">3. Vehicle Class & Substitutions</h3>
+                <h3 className="font-serif text-2xl text-luxury-textPrimary mb-3">3. Cancellations & Modifications</h3>
                 <p>
-                  Everest Executive Limo LLC reserves the right to upgrade a passenger to a higher vehicle class (for example, providing a luxury SUV instead of a sedan) at no additional charge in the rare event of mechanical maintenance or dispatch logistics.
+                  To cancel or alter an itinerary, clients must notify executive dispatch directly by telephone or verified email reply within the time window specified on their quotation confirmation.
                 </p>
               </div>
 
               <div>
-                <h3 className="font-serif text-2xl text-luxury-textPrimary mb-3">4. Conduct & Passenger Safety</h3>
+                <h3 className="font-serif text-2xl text-luxury-textPrimary mb-3">4. Passenger Conduct & Vehicle Care</h3>
                 <p>
-                  For the safety and hygiene of all guests, smoking, vaping, and illegal substances are strictly prohibited inside all Everest Executive Limo vehicles. Chauffeurs reserve the right to terminate service without refund if passenger behavior endangers road safety or vehicle integrity.
+                  Smoking, vaping, and illegal substances are strictly prohibited inside all company vehicles. Passengers are expected to treat vehicles and chauffeurs with mutual respect. Clients are responsible for any intentional damages incurred during their charter.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-serif text-2xl text-luxury-textPrimary mb-3">5. Limitation of Liability</h3>
+                <p>
+                  While we prioritize punctuality and monitor weather and traffic conditions with utmost diligence, Everest Executive Limo LLC cannot be held financially liable for delays caused by circumstances beyond reasonable operational control, including severe weather disruptions, unforeseen road closures, airport security lockdowns, or accidents on transit corridors.
                 </p>
               </div>
             </div>
@@ -121,4 +141,3 @@ const PrivacyTermsPage = () => {
 };
 
 export default PrivacyTermsPage;
-

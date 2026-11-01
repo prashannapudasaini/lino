@@ -78,10 +78,13 @@ function App() {
           <Route path="/airport-transportation" element={<AirportPage />} />
           <Route path="/service-areas" element={<ServiceAreasPage />} />
           <Route path="/fleet" element={<FleetPage />} />
+          <Route path="/book-now" element={<QuotePage />} />
           <Route path="/quote" element={<QuotePage />} />
           <Route path="/contact" element={<ContactPage />} />
-          <Route path="/privacy" element={<PrivacyTermsPage />} />
-          <Route path="/terms" element={<PrivacyTermsPage />} />
+          <Route path="/privacy-policy" element={<PrivacyTermsPage defaultTab="privacy" />} />
+          <Route path="/privacy" element={<PrivacyTermsPage defaultTab="privacy" />} />
+          <Route path="/terms-and-conditions" element={<PrivacyTermsPage defaultTab="terms" />} />
+          <Route path="/terms" element={<PrivacyTermsPage defaultTab="terms" />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
 
@@ -103,4 +106,3 @@ function App() {
 }
 
 export default App;
-

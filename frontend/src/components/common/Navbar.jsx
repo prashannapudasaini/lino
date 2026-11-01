@@ -4,8 +4,8 @@ import { Menu, X, ArrowRight } from 'lucide-react';
 
 const navLinks = [
   { name: 'Home', path: '/' },
-  { name: 'About', path: '/about' },
-  { name: 'Services', path: '/services' },
+  { name: 'About Us', path: '/about' },
+  { name: 'Our Services', path: '/services' },
   { name: 'Airport Transportation', path: '/airport-transportation' },
   { name: 'Service Areas', path: '/service-areas' },
   { name: 'Our Fleet', path: '/fleet' },
@@ -55,7 +55,7 @@ const Navbar = () => {
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           isScrolled
-            ? 'bg-luxury-bg/95 backdrop-blur-md border-b border-luxury-border/80 py-3 shadow-2xl'
+            ? 'bg-luxury-bg/95 backdrop-blur-md border-b border-luxury-border/80 py-3.5 shadow-2xl'
             : 'bg-gradient-to-b from-black/90 via-black/50 to-transparent py-5'
         }`}
       >
@@ -82,7 +82,7 @@ const Navbar = () => {
             </Link>
 
             {/* Desktop Navigation Links */}
-            <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
+            <nav className="hidden lg:flex items-center gap-6 xl:gap-7">
               {navLinks.map((link) => {
                 const active = isActive(link.path);
                 return (
@@ -107,10 +107,10 @@ const Navbar = () => {
             {/* Header Right Action: Pill Button */}
             <div className="hidden sm:flex items-center">
               <Link
-                to="/quote"
+                to="/book-now"
                 className="inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-full bg-luxury-gold text-luxury-bg font-semibold text-xs uppercase tracking-wider hover:bg-luxury-goldHover transition-all duration-200 shadow-luxury-gold hover:shadow-luxury-glow active:scale-95"
               >
-                <span>Get a Quote</span>
+                <span>Book Now</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
@@ -118,10 +118,10 @@ const Navbar = () => {
             {/* Mobile Menu Toggle Button */}
             <div className="flex items-center gap-3 lg:hidden">
               <Link
-                to="/quote"
+                to="/book-now"
                 className="sm:hidden px-3.5 py-1.5 rounded-full bg-luxury-gold text-luxury-bg text-xs font-semibold uppercase tracking-wider"
               >
-                Quote
+                Book
               </Link>
 
               <button
@@ -201,10 +201,10 @@ const Navbar = () => {
 
           <div className="pt-6 border-t border-luxury-border space-y-4">
             <Link
-              to="/quote"
-              className="flex items-center justify-center gap-2 w-full py-3 rounded-full bg-luxury-gold text-luxury-bg font-semibold text-xs uppercase tracking-wider shadow-luxury-gold"
+              to="/book-now"
+              className="flex items-center justify-center gap-2 w-full py-3.5 rounded-full bg-luxury-gold text-luxury-bg font-semibold text-xs uppercase tracking-wider shadow-luxury-gold"
             >
-              <span>Request a Ride</span>
+              <span>Book Your Ride</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
 

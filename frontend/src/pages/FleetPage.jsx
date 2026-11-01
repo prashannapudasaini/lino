@@ -1,144 +1,128 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Users, Briefcase, Check, ArrowRight, ShieldCheck, Sparkles, Wifi } from 'lucide-react';
+import { Users, Briefcase, Check, ArrowRight, ShieldCheck, Wifi, Sparkles } from 'lucide-react';
 import PageHero from '../components/common/PageHero';
-import SectionHeading from '../components/common/SectionHeading';
-import Button from '../components/common/Button';
-import CtaBanner from '../components/home/CtaBanner';
-import { getFleet } from '../services/api';
 
-const defaultFleetData = [
+const fleetData = [
   {
-    id: 1,
+    id: "sedan",
     name: "Executive Luxury Sedan",
-    category: "Sedan",
     subtitle: "Mercedes-Benz S-Class / Cadillac CT6",
-    passenger_capacity: 3,
-    luggage_capacity: 3,
-    image_url: "https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=1200&q=80",
-    description: "The gold standard of executive mobility. Engineered for business leaders, solo executives, and couples who require acoustic quietness, handcrafted leather seating, and seamless mobile connectivity.",
+    category: "Sedan",
+    passengers: 3,
+    luggage: 3,
+    image: "https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=1600&q=85",
+    interiorImage: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=1000&q=80",
+    description: "The gold standard of executive mobility. Engineered for corporate executives, solo travelers, and couples who require acoustic quietness, handcrafted leather seating, and seamless mobile connectivity for work or rest.",
     features: [
-      "Complimentary High-Speed Wi-Fi",
-      "Handcrafted Nappa Leather Recliners",
-      "Individual Rear Dual-Zone Climate Controls",
-      "Acoustic Noise-Insulated Double Glazing",
-      "Mobile Device Fast-Charging Ports & USB-C",
-      "Chilled Bottled Spring Water & Press"
-    ],
-    hourly_rate_estimate: "Starting from $95/hr"
+      "Acoustic noise-insulated double glazing",
+      "Handcrafted Nappa leather reclining seating",
+      "Individual dual-zone rear climate controls",
+      "Complimentary high-speed in-cabin Wi-Fi",
+      "Fast USB-C and 110V laptop power ports",
+      "Chilled bottled spring water & executive amenities"
+    ]
   },
   {
-    id: 2,
+    id: "suv",
     name: "Executive Luxury SUV",
-    category: "SUV",
     subtitle: "Cadillac Escalade ESV / Lincoln Navigator L",
-    passenger_capacity: 6,
-    luggage_capacity: 6,
-    image_url: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1200&q=80",
-    description: "Commanding road authority and opulent first-class comfort. Boasts extended wheelbase luggage capacity, captain recliners, and panoramic visibility for corporate delegations and family airport transfers.",
+    category: "SUV",
+    passengers: 6,
+    luggage: 6,
+    image: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1600&q=85",
+    interiorImage: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1000&q=80",
+    description: "Commanding road authority and opulent first-class comfort. Boasting an extended wheelbase for massive luggage capacity, captain recliners, and panoramic visibility for corporate delegations and airport transfers.",
     features: [
-      "Extended Wheelbase with Superior Luggage Capacity",
-      "Heated & Ventilated Second-Row Captain Chairs",
-      "Panoramic Sunroof with Power Privacy Shades",
-      "All-Wheel Drive Traction for All Weather Conditions",
-      "Bespoke Interior Ambient LED Lighting",
-      "Ample Space for 6 Standard Suitcases & Carry-ons"
-    ],
-    hourly_rate_estimate: "Starting from $120/hr"
+      "Extended wheelbase with maximum luggage capacity",
+      "Second-row heated & ventilated captain chairs",
+      "Panoramic glass roof with power privacy blinds",
+      "Intelligent all-wheel drive for all-weather traction",
+      "Bespoke multi-color ambient interior illumination",
+      "Ample space for 6 standard suitcases & carry-ons"
+    ]
   },
   {
-    id: 3,
-    name: "Mercedes-Benz Executive Sprinter",
-    category: "Van",
-    subtitle: "Executive Jet Class Custom Sprinter",
-    passenger_capacity: 14,
-    luggage_capacity: 12,
-    image_url: "https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=1200&q=80",
-    description: "A private jet cabin on wheels. Tailored for corporate executive delegations, board roadshows, and discerning group itineraries requiring full standing height, worktables, and unmatched luxury.",
+    id: "sprinter",
+    name: "Mercedes Executive Sprinter",
+    subtitle: "Custom Executive Jet-Class Cabin",
+    category: "Executive Van",
+    passengers: 14,
+    luggage: 12,
+    image: "https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=1600&q=85",
+    interiorImage: "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=1000&q=80",
+    description: "A private jet cabin on wheels. Tailored for corporate board roadshows, executive delegations, and discerning group itineraries requiring full standing height, worktables, and unmatched luxury.",
     features: [
-      "Full 6'4\" Standing Headroom Cabin",
-      "Custom Hand-Stitched Leather Captain Recliners",
-      "Retractable Executive Worktables for Laptops",
-      "43-inch 4K Smart Media Monitor with HDMI Input",
-      "Substantial Dedicated Rear Luggage Compartment",
-      "Privacy Partition & Enhanced Acoustic Insulation"
-    ],
-    hourly_rate_estimate: "Starting from $165/hr"
+      "Full 6'4\" standing headroom cabin",
+      "Hand-stitched leather captain recliners",
+      "Retractable executive worktables for laptops",
+      "43-inch 4K Smart Media Monitor with HDMI presentation",
+      "Substantial dedicated rear luggage hold",
+      "Full privacy partition & enhanced acoustic isolation"
+    ]
   },
   {
-    id: 4,
+    id: "limo",
     name: "Executive Stretch Limousine",
+    subtitle: "Lincoln Presidential Stretch",
     category: "Limousine",
-    subtitle: "Lincoln MKT Presidential Stretch",
-    passenger_capacity: 8,
-    luggage_capacity: 6,
-    image_url: "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=1200&q=80",
-    description: "Timeless elegance and celebratory prestige. Designed for milestone galas, black-tie occasions, weddings, and VIP arrivals where making a grand impression is essential.",
+    passengers: 8,
+    luggage: 6,
+    image: "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=1600&q=85",
+    interiorImage: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1000&q=80",
+    description: "Timeless elegance and celebratory prestige. Tailored for milestone galas, black-tie celebrations, weddings, and high-profile VIP arrivals where an unforgettable entrance is paramount.",
     features: [
-      "Custom J-Seating in Hand-Stitched Fine Leather",
-      "Integrated Bar & Chilled Glassware Console",
-      "Fiber-Optic Starlight Ceiling & Ambient Dimming",
-      "Premium Bluetooth Surround Audio System",
-      "Full Driver Privacy Partition",
-      "Deep Tinted Security Glass for Total Discretion"
-    ],
-    hourly_rate_estimate: "Starting from $145/hr"
+      "Custom J-lounge seating in fine stitched leather",
+      "Chilled glassware console & executive beverage bar",
+      "Fiber-optic starlight ceiling with ambient dimming",
+      "Premium Bluetooth surround acoustic sound system",
+      "Deep tinted security glass for complete passenger privacy",
+      "Full chauffeur privacy partition"
+    ]
   }
 ];
 
 const FleetPage = () => {
-  const [vehicles, setVehicles] = useState(defaultFleetData);
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [activeFilter, setActiveFilter] = useState("All");
 
-  useEffect(() => {
-    const fetchFleet = async () => {
-      try {
-        const data = await getFleet();
-        if (data && data.length > 0) {
-          const formatted = data.map(v => ({
-            ...v,
-            features: typeof v.features_json === 'string' ? JSON.parse(v.features_json || '[]') : []
-          }));
-          setVehicles(formatted);
-        }
-      } catch (err) {
-        // Keeps defaults
-      }
-    };
-    fetchFleet();
-  }, []);
-
-  const categories = ["All", "Sedan", "SUV", "Van", "Limousine"];
-  const filteredVehicles = selectedCategory === "All"
-    ? vehicles
-    : vehicles.filter(v => v.category === selectedCategory);
+  const filteredFleet = activeFilter === "All"
+    ? fleetData
+    : fleetData.filter(v => v.category.toLowerCase().includes(activeFilter.toLowerCase()));
 
   return (
-    <div>
+    <div className="bg-luxury-bg text-white">
+      {/* Hero */}
       <PageHero
-        eyebrow="The Everest Collection"
-        title="Our Curated Executive Luxury Fleet"
-        subtitle="Meticulously maintained, certified, and appointed with premium amenities to ensure absolute serenity on every journey."
+        eyebrow="OUR FLEET"
+        title="Travel in a Class of Its Own."
+        subtitle="Discover the comfort and elegance of our executive transportation fleet."
         breadcrumb={[{ name: "Our Fleet" }]}
-        backgroundImage="https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=1600&q=80"
+        backgroundImage="https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=2200&q=85"
       />
 
-      {/* Fleet Filter Bar */}
-      <section className="py-12 bg-luxury-surface border-b border-luxury-border">
+      {/* Fleet Introduction & Filter */}
+      <section className="py-16 md:py-20 bg-[#0B0B0C]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="text-xs uppercase tracking-widest text-luxury-gold font-semibold">
-              Filter by Vehicle Category:
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-12 border-b border-luxury-border">
+            <div className="max-w-xl">
+              <span className="text-[11px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-luxury-gold block mb-2">
+                LUXURY AUTOMOTIVE SHOWCASE
+              </span>
+              <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal text-white tracking-tight">
+                Curated Executive Vehicles
+              </h2>
             </div>
-            <div className="flex flex-wrap gap-2">
-              {categories.map((cat, i) => (
+
+            {/* Filter Tabs */}
+            <div className="flex flex-wrap items-center gap-2">
+              {["All", "Sedan", "SUV", "Executive Van", "Limousine"].map((cat) => (
                 <button
-                  key={i}
-                  onClick={() => setSelectedCategory(cat)}
-                  className={`px-4 py-2 rounded-xl text-xs font-semibold tracking-wider transition-all min-h-[44px] ${
-                    selectedCategory === cat
-                      ? 'bg-luxury-gold text-luxury-bg shadow-luxury-gold font-bold'
-                      : 'bg-luxury-card border border-luxury-border text-luxury-textSecondary hover:text-luxury-textPrimary hover:border-luxury-gold/40'
+                  key={cat}
+                  onClick={() => setActiveFilter(cat)}
+                  className={`px-5 py-2.5 rounded-full text-xs font-semibold tracking-wider uppercase transition-all focus:outline-none ${
+                    activeFilter === cat
+                      ? 'bg-luxury-gold text-luxury-bg shadow-luxury-gold'
+                      : 'bg-luxury-surface text-zinc-400 hover:text-white border border-luxury-border'
                   }`}
                 >
                   {cat}
@@ -149,94 +133,110 @@ const FleetPage = () => {
         </div>
       </section>
 
-      {/* Vehicle Editorial Presentations */}
-      <section className="py-20 md:py-28 bg-luxury-bg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20 md:space-y-28">
-          {filteredVehicles.map((vehicle, idx) => {
-            const isReversed = idx % 2 === 1;
-            return (
-              <div
-                key={vehicle.id || idx}
-                className={`grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center ${
-                  isReversed ? 'lg:flex-row-reverse' : ''
-                }`}
-              >
-                {/* Vehicle Photography */}
-                <div className={`lg:col-span-7 ${isReversed ? 'lg:order-2' : 'lg:order-1'}`}>
-                  <div className="relative rounded-2xl overflow-hidden border border-luxury-border shadow-2xl group bg-luxury-surface">
+      {/* Detailed Editorial Vehicle Showcases */}
+      <div className="py-12 md:py-20 space-y-24 md:space-y-32">
+        {filteredFleet.map((vehicle, index) => {
+          const isEven = index % 2 === 0;
+          return (
+            <section key={vehicle.id} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="bg-luxury-card border border-luxury-border rounded-3xl overflow-hidden shadow-2xl">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 items-stretch">
+                  {/* Vehicle Hero Photography */}
+                  <div className={`lg:col-span-7 relative min-h-[380px] sm:min-h-[460px] ${isEven ? 'order-1' : 'order-1 lg:order-2'}`}>
                     <img
-                      src={vehicle.image_url}
+                      src={vehicle.image}
                       alt={vehicle.name}
-                      className="w-full h-80 sm:h-[420px] object-cover object-center group-hover:scale-105 transition-transform duration-700 filter brightness-95"
+                      className="w-full h-full object-cover object-center filter brightness-95"
                       loading="lazy"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-luxury-bg/80 via-transparent to-transparent" />
-                    
-                    <span className="absolute top-4 left-4 px-3 py-1.5 rounded-full bg-luxury-bg/85 backdrop-blur-md border border-luxury-border text-xs font-semibold tracking-wider uppercase text-luxury-gold">
-                      {vehicle.category} Class
-                    </span>
-                  </div>
-                </div>
-
-                {/* Vehicle Specifications */}
-                <div className={`lg:col-span-5 space-y-6 ${isReversed ? 'lg:order-1' : 'lg:order-2'}`}>
-                  <div>
-                    <span className="text-xs uppercase tracking-widest text-luxury-gold font-semibold block mb-1">
-                      {vehicle.subtitle}
-                    </span>
-                    <h2 className="font-serif text-3xl sm:text-4xl font-normal text-luxury-textPrimary">
-                      {vehicle.name}
-                    </h2>
-                  </div>
-
-                  <p className="text-sm text-luxury-textSecondary leading-relaxed">
-                    {vehicle.description}
-                  </p>
-
-                  {/* Capacities Pill Bar */}
-                  <div className="grid grid-cols-2 gap-3 p-3.5 rounded-xl bg-luxury-surface border border-luxury-border text-xs">
-                    <div className="flex items-center gap-2 text-luxury-textPrimary">
-                      <Users className="w-4 h-4 text-luxury-gold" />
-                      <span><strong>{vehicle.passenger_capacity}</strong> Passengers</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-luxury-textPrimary">
-                      <Briefcase className="w-4 h-4 text-luxury-gold" />
-                      <span><strong>{vehicle.luggage_capacity}</strong> Luggage Capacity</span>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent lg:hidden" />
+                    <div className="absolute top-6 left-6">
+                      <span className="px-3.5 py-1.5 rounded-full bg-black/75 backdrop-blur-md border border-white/10 text-[10px] uppercase tracking-wider font-semibold text-luxury-gold">
+                        {vehicle.category}
+                      </span>
                     </div>
                   </div>
 
-                  {/* Amenities List */}
-                  {vehicle.features && vehicle.features.length > 0 && (
-                    <div>
-                      <h4 className="text-xs uppercase tracking-wider font-semibold text-luxury-textPrimary mb-3">
-                        Onboard Luxury Amenities:
-                      </h4>
+                  {/* Specifications & Editorial Content */}
+                  <div className={`lg:col-span-5 p-8 sm:p-10 md:p-12 flex flex-col justify-between ${isEven ? 'order-2' : 'order-2 lg:order-1'}`}>
+                    <div className="space-y-6">
+                      <div>
+                        <h3 className="font-serif text-2xl sm:text-3xl md:text-4xl font-normal text-white">
+                          {vehicle.name}
+                        </h3>
+                        <p className="text-xs text-luxury-gold font-medium mt-1">
+                          {vehicle.subtitle}
+                        </p>
+                      </div>
+
+                      <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-normal">
+                        {vehicle.description}
+                      </p>
+
+                      {/* Passenger & Luggage Specs */}
+                      <div className="flex items-center gap-6 py-4 border-y border-white/10 text-xs text-zinc-300">
+                        <div className="flex items-center gap-2">
+                          <Users className="w-4 h-4 text-luxury-gold" />
+                          <span><strong>{vehicle.passengers}</strong> Passengers</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Briefcase className="w-4 h-4 text-luxury-gold" />
+                          <span><strong>{vehicle.luggage}</strong> Luggage</span>
+                        </div>
+                      </div>
+
+                      {/* Interior Features */}
                       <div className="space-y-2">
-                        {vehicle.features.map((feature, fIdx) => (
-                          <div key={fIdx} className="flex items-start gap-2 text-xs text-luxury-textSecondary">
-                            <Check className="w-3.5 h-3.5 text-luxury-gold shrink-0 mt-0.5" />
-                            <span>{feature}</span>
-                          </div>
-                        ))}
+                        <h4 className="text-[11px] uppercase tracking-wider font-semibold text-luxury-gold">
+                          In-Cabin Amenities:
+                        </h4>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-zinc-300">
+                          {vehicle.features.map((feat, fIdx) => (
+                            <div key={fIdx} className="flex items-start gap-2">
+                              <Check className="w-3.5 h-3.5 text-luxury-gold shrink-0 mt-0.5" />
+                              <span className="leading-tight">{feat}</span>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
-                  )}
 
-                  <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                    <Link to="/quote">
-                      <Button size="md" variant="primary" className="text-xs uppercase tracking-wider font-bold">
-                        Request Quote for This Vehicle <ArrowRight className="w-3.5 h-3.5 ml-2" />
-                      </Button>
-                    </Link>
+                    {/* CTA */}
+                    <div className="pt-8">
+                      <Link
+                        to="/book-now"
+                        className="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-7 py-3.5 rounded-full bg-luxury-gold text-luxury-bg font-semibold text-xs uppercase tracking-wider hover:bg-luxury-goldHover transition-all shadow-luxury-gold"
+                      >
+                        <span>Request This Vehicle</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </div>
-            );
-          })}
+            </section>
+          );
+        })}
+      </div>
+
+      {/* Bottom CTA */}
+      <section className="py-20 md:py-28 bg-[#0B0B0C] border-t border-luxury-border text-center">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal text-white mb-4 tracking-tight">
+            Have a Specific Vehicle Requirement?
+          </h2>
+          <p className="text-sm sm:text-base text-zinc-400 max-w-xl mx-auto mb-8 font-normal">
+            For specialized delegation motorcades or multiple vehicles, our dispatch team will tailor an arrangement for your exact group size.
+          </p>
+          <Link
+            to="/book-now"
+            className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-luxury-gold text-luxury-bg font-semibold text-xs sm:text-sm uppercase tracking-wider hover:bg-luxury-goldHover transition-all shadow-luxury-gold hover:shadow-luxury-glow"
+          >
+            <span>Book Your Ride</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
       </section>
-
-      <CtaBanner />
     </div>
   );
 };

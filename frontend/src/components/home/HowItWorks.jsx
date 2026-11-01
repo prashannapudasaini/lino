@@ -1,79 +1,99 @@
 import React from 'react';
-import { FileText, Search, Send, CheckCircle2 } from 'lucide-react';
-import SectionHeading from '../common/SectionHeading';
+import { FileText, MapPin, Send, CheckCircle2, AlertCircle } from 'lucide-react';
 
 const steps = [
   {
     step: "01",
-    icon: FileText,
-    title: "Submit Ride Request",
-    desc: "Provide your itinerary, preferred vehicle category, passenger count, and optional airport details through our streamlined form."
+    title: "Request Your Ride",
+    desc: "Select your preferred service type and initial travel timeframe through our seamless booking interface.",
+    icon: FileText
   },
   {
     step: "02",
-    icon: Search,
-    title: "Executive Review",
-    desc: "Our dispatch specialists verify optimal routing, vehicle suitability, and airport terminal coordination for your exact itinerary."
+    title: "Share Your Journey Details",
+    desc: "Provide your pickup location, destination, passenger count, luggage needs, and optional airport flight details.",
+    icon: MapPin
   },
   {
     step: "03",
-    icon: Send,
-    title: "Receive Custom Quote",
-    desc: "You receive a transparent, all-inclusive personalized quote and trip summary via email with zero hidden fees."
+    title: "Receive Your Personalized Quote",
+    desc: "Our dispatch team calculates routing, confirms vehicle suitability, and delivers a transparent all-inclusive quote.",
+    icon: Send
   },
   {
     step: "04",
-    icon: CheckCircle2,
-    title: "Confirm With Dispatch",
-    desc: "Accept your quotation to officially secure your chauffeur. Your assigned driver's contact details are provided prior to pickup."
+    title: "Confirm Your Transportation",
+    desc: "Review and accept your quotation. Your chauffeur and luxury vehicle are officially reserved for your journey.",
+    icon: CheckCircle2
   }
 ];
 
 const HowItWorks = () => {
   return (
-    <section className="py-20 md:py-28 bg-luxury-surface border-y border-luxury-border relative">
+    <section className="py-20 md:py-28 bg-[#151517] border-y border-luxury-border relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <SectionHeading
-          eyebrow="Frictionless Booking Process"
-          title="How Your Journey is Arranged"
-          subtitle="A clear, transparent four-step process ensuring every detail of your transportation is verified and managed by experienced dispatchers."
-          align="center"
-        />
+        {/* Section Header */}
+        <div className="text-center max-w-2xl mx-auto mb-16">
+          <div className="inline-flex items-center gap-2 mb-3">
+            <span className="w-6 h-[1px] bg-luxury-gold inline-block"></span>
+            <span className="text-[11px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-luxury-gold">
+              EFFORTLESS PROCESS
+            </span>
+            <span className="w-6 h-[1px] bg-luxury-gold inline-block"></span>
+          </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative">
-          {steps.map((st, idx) => {
-            const IconComp = st.icon;
-            return (
-              <div
-                key={idx}
-                className="bg-luxury-bg border border-luxury-border rounded-xl p-6 relative flex flex-col justify-between hover:border-luxury-gold/50 transition-all duration-300 shadow-luxury group"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-5">
-                    <span className="font-mono text-2xl font-bold text-luxury-gold/40 group-hover:text-luxury-gold transition-colors">
-                      {st.step}
-                    </span>
-                    <div className="w-10 h-10 rounded-xl bg-luxury-card border border-luxury-border flex items-center justify-center text-luxury-gold group-hover:border-luxury-gold/40 transition-colors">
-                      <IconComp className="w-5 h-5" />
-                    </div>
-                  </div>
+          <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal tracking-tight text-white leading-[1.15] mb-4">
+            How Your Journey is Arranged
+          </h2>
 
-                  <h3 className="font-serif text-lg font-semibold text-luxury-textPrimary mb-2">
-                    {st.title}
-                  </h3>
-
-                  <p className="text-xs text-luxury-textSecondary leading-relaxed">
-                    {st.desc}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
+          <p className="text-sm text-zinc-400 leading-relaxed font-normal">
+            A clear, four-step executive procedure ensuring every travel detail is verified, coordinated, and tailored around your personal schedule.
+          </p>
         </div>
 
-        {/* Clear Notice */}
-        <div className="mt-10 p-4 rounded-xl bg-luxury-card border border-luxury-border max-w-2xl mx-auto text-center text-xs text-luxury-textSecondary">
-          <strong className="text-luxury-textPrimary">Please Note:</strong> Submitting a request initiates a formal quotation inquiry. Your booking is finalized upon mutual agreement with our executive team.
+        {/* 4-Step Horizontal Process with Connecting Line */}
+        <div className="relative">
+          {/* Subtle Horizontal Connecting Line for Desktop */}
+          <div className="hidden lg:block absolute top-1/2 left-[12%] right-[12%] h-[1px] bg-gradient-to-r from-transparent via-luxury-gold/30 to-transparent -translate-y-8 z-0" />
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
+            {steps.map((st, idx) => {
+              const IconComp = st.icon;
+              return (
+                <div
+                  key={idx}
+                  className="bg-luxury-card border border-luxury-border rounded-2xl p-6 sm:p-7 flex flex-col justify-between hover:border-luxury-gold/50 transition-all duration-300 shadow-luxury group hover:-translate-y-1"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-6">
+                      <span className="font-mono text-3xl font-bold text-luxury-gold/40 group-hover:text-luxury-gold transition-colors">
+                        {st.step}
+                      </span>
+                      <div className="w-11 h-11 rounded-xl bg-luxury-surface border border-luxury-border flex items-center justify-center text-luxury-gold group-hover:border-luxury-gold/40 group-hover:bg-luxury-gold/10 transition-all shadow-sm">
+                        <IconComp className="w-5 h-5" />
+                      </div>
+                    </div>
+
+                    <h3 className="font-serif text-xl font-normal text-white mb-2.5 group-hover:text-luxury-gold transition-colors">
+                      {st.title}
+                    </h3>
+
+                    <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed font-normal">
+                      {st.desc}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Reassurance Disclaimer Box */}
+        <div className="mt-12 p-4 sm:p-5 rounded-2xl bg-luxury-bg/80 border border-luxury-border max-w-3xl mx-auto flex items-center gap-3 text-xs text-zinc-400 shadow-md">
+          <AlertCircle className="w-5 h-5 text-luxury-gold shrink-0" />
+          <p>
+            <strong className="text-white">Quotation Policy:</strong> Submitting a ride request initiates a personalized quotation review. Transportation is officially confirmed upon mutual agreement with our dispatch team.
+          </p>
         </div>
       </div>
     </section>
@@ -81,4 +101,3 @@ const HowItWorks = () => {
 };
 
 export default HowItWorks;
-

@@ -1,202 +1,211 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, Navigation, CheckCircle2, ArrowRight, ShieldCheck, Compass } from 'lucide-react';
+import { MapPin, Navigation, CheckCircle2, ArrowRight, ShieldCheck, Plane } from 'lucide-react';
 import PageHero from '../components/common/PageHero';
-import SectionHeading from '../components/common/SectionHeading';
-import Button from '../components/common/Button';
-import CtaBanner from '../components/home/CtaBanner';
-import { getServiceAreas } from '../services/api';
 
-const defaultAreas = [
+const regions = [
   {
-    name: "Central Pennsylvania & Capital Region",
+    id: "pa",
     state: "Pennsylvania",
-    region: "Primary Hub",
-    description: "Our operational foundation and primary fleet staging area. We provide round-the-clock executive transfers across Harrisburg, Hershey Medical Center, Lancaster County, York, and Cumberland County.",
+    status: "Primary Operations Base",
     cities: [
-      "Harrisburg (State Capitol & Business District)",
-      "Hershey (The Hershey Hotel, Milton S. Hershey Medical Center)",
-      "Lancaster (Historic Downtown & Commercial Centers)",
-      "York (Industrial & Executive Corridors)",
-      "Mechanicsburg & Camp Hill",
-      "Carlisle & Enola",
-      "Lebanon & Surrounding Municipalities"
-    ]
+      "Harrisburg (State Capitol & Central PA Operations)",
+      "Hershey (The Hotel Hershey & Medical Center)",
+      "Lancaster (Historic Downtown & Commercial Corridors)",
+      "York (Industrial & Executive Centers)",
+      "Center City Philadelphia & Main Line (Wayne, Radnor, Villanova)",
+      "Mechanicsburg, Camp Hill & Cumberland Valley"
+    ],
+    airports: ["MDT (Harrisburg)", "PHL (Philadelphia)"],
+    description: "Our core operational territory and fleet staging headquarters. Serving corporate executives, government officials, healthcare leadership, and private travelers 24 hours a day, 7 days a week."
   },
   {
-    name: "Greater Philadelphia & The Main Line",
-    state: "Pennsylvania",
-    region: "Delaware Valley",
-    description: "Daily chauffeured connectivity between Center City Philadelphia corporate suites, prestigious Main Line residences, King of Prussia business corridors, and Philadelphia International Airport (PHL).",
-    cities: [
-      "Center City Philadelphia (Financial & Historic Districts)",
-      "King of Prussia & Valley Forge Corporate Centers",
-      "The Main Line (Wayne, Bryn Mawr, Villanova, Radnor)",
-      "Conshohocken & Plymouth Meeting",
-      "Chesterbrook & Malvern Corporate Parks",
-      "Bucks County & Montgomery County"
-    ]
-  },
-  {
-    name: "New York City & Tri-State Corridor",
+    id: "ny",
     state: "New York",
-    region: "Tri-State Metro",
-    description: "Direct long-distance luxury transport connecting Central Pennsylvania to Midtown Manhattan luxury hotels, Wall Street financial headquarters, Brooklyn, and New York airports (JFK and LGA).",
+    status: "Confirmed Tri-State Region",
     cities: [
       "Manhattan (Midtown, Financial District, Hudson Yards)",
-      "Brooklyn & Queens Executive Terminals",
-      "Long Island & Hamptons Transit",
-      "White Plains & Westchester County Corporate Hubs"
-    ]
+      "Brooklyn (DUMBO, Brooklyn Heights)",
+      "Queens & Long Island Regional Access",
+      "White Plains & Westchester Executive Parks"
+    ],
+    airports: ["JFK (John F. Kennedy)", "LGA (LaGuardia)"],
+    description: "Scheduled point-to-point executive charters between Pennsylvania and New York City. Avoid crowded Amtrak cars or flight delays with private, quiet cabin transit."
   },
   {
-    name: "New Jersey Corridor",
+    id: "nj",
     state: "New Jersey",
-    region: "Garden State",
-    description: "Serving key corporate corridors along the New Jersey Turnpike and I-95, connecting major pharmaceutical campuses, Princeton University, Newark Liberty Airport (EWR), and waterfront corporate centers.",
+    status: "Confirmed Transit Corridor",
     cities: [
-      "Princeton (University & Corporate Research Centers)",
-      "Newark & Newark Liberty International (EWR)",
-      "Jersey City & Hoboken Financial Centers",
-      "Cherry Hill & Mount Laurel",
-      "Trenton (State Offices)",
-      "Morristown & Somerset Business Corridors"
-    ]
+      "Princeton (University & Pharmaceutical Research Campuses)",
+      "Newark & Jersey City Financial Waterfront",
+      "Morristown, Summit & Somerset Corporate Corridors",
+      "Cherry Hill & Mount Laurel Corporate Centers"
+    ],
+    airports: ["EWR (Newark Liberty)"],
+    description: "Dedicated chauffeured transportation along the I-95 and New Jersey Turnpike corridors, connecting major life sciences campuses, financial offices, and Newark Airport."
   },
   {
-    name: "Washington D.C. & Capital Region",
-    state: "District of Columbia",
-    region: "Mid-Atlantic",
-    description: "Dedicated executive mobility for government contractors, trade delegations, visiting dignitaries, and legal conferences traveling between Pennsylvania and the nation's capital.",
+    id: "dc",
+    state: "Washington D.C.",
+    status: "Confirmed Capital Region",
     cities: [
-      "Downtown Washington D.C. & K Street",
-      "Capitol Hill & Congressional Offices",
+      "Downtown Washington D.C. (K Street, Penn Quarter)",
+      "Capitol Hill & Federal Agency Headquarters",
       "Georgetown & Embassy Row",
-      "Arlington, VA (Crystal City, Pentagon City)",
-      "Bethesda & Silver Spring, MD"
-    ]
+      "Arlington & Alexandria, VA (Crystal City, Pentagon City)"
+    ],
+    airports: ["Direct Regional Connection to PA Hubs"],
+    description: "Executive ground transit for trade delegations, corporate leadership, and state officials traveling between Central Pennsylvania and the nation's capital."
   }
 ];
 
 const ServiceAreasPage = () => {
-  const [areasList, setAreasList] = useState(defaultAreas);
-
-  useEffect(() => {
-    const fetchAreas = async () => {
-      try {
-        const data = await getServiceAreas();
-        if (data && data.length > 0) {
-          const parsed = data.map(item => ({
-            ...item,
-            cities: typeof item.key_cities_json === 'string' ? JSON.parse(item.key_cities_json || '[]') : []
-          }));
-          setAreasList(parsed);
-        }
-      } catch (err) {
-        // Keeps defaults
-      }
-    };
-    fetchAreas();
-  }, []);
+  const [selectedRegion, setSelectedRegion] = useState("pa");
+  const activeRegion = regions.find((r) => r.id === selectedRegion) || regions[0];
 
   return (
-    <div>
+    <div className="bg-luxury-bg text-white">
+      {/* Hero */}
       <PageHero
-        eyebrow="Coverage Directory"
-        title="Regional Service Areas & Travel Corridors"
-        subtitle="Serving Pennsylvania, New York, New Jersey, and Washington D.C. with dependable executive chauffeur and limousine transportation."
+        eyebrow="SERVICE COVERAGE"
+        title="Wherever Your Journey Takes You."
+        subtitle="Explore the locations and destinations served by Everest Executive Limo."
         breadcrumb={[{ name: "Service Areas" }]}
-        backgroundImage="https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=1600&q=80"
+        backgroundImage="https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=2200&q=85"
       />
 
-      {/* Coverage Overview */}
-      <section className="py-20 md:py-28 bg-luxury-bg">
+      {/* 1. Introduction */}
+      <section className="py-20 md:py-24 bg-[#0B0B0C]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionHeading
-            eyebrow="Confirmed Geographic Coverage"
-            title="Strategic Regional Transportation Hubs"
-            subtitle="Explore our verified primary service areas and cities. We specialize in point-to-point intercity travel, executive roadshows, and airport connections."
-            align="center"
-          />
-
-          <div className="space-y-12">
-            {areasList.map((area, index) => (
-              <div
-                key={index}
-                className="bg-luxury-surface border border-luxury-border rounded-2xl p-6 sm:p-10 shadow-luxury hover:border-luxury-gold/40 transition-all duration-300"
-              >
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                  {/* Left Info */}
-                  <div className="lg:col-span-5 space-y-4">
-                    <div className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-luxury-gold font-semibold">
-                      <Navigation className="w-4 h-4" />
-                      <span>{area.region || area.state}</span>
-                    </div>
-
-                    <h3 className="font-serif text-2xl sm:text-3xl text-luxury-textPrimary">
-                      {area.name}
-                    </h3>
-
-                    <p className="text-xs sm:text-sm text-luxury-textSecondary leading-relaxed">
-                      {area.description}
-                    </p>
-
-                    <div className="pt-2">
-                      <Link to="/quote">
-                        <Button size="sm" variant="primary" className="text-xs uppercase tracking-wider font-bold">
-                          Request Ride in {area.state} <ArrowRight className="w-3.5 h-3.5 ml-2" />
-                        </Button>
-                      </Link>
-                    </div>
-                  </div>
-
-                  {/* Right Cities List */}
-                  <div className="lg:col-span-7 bg-luxury-card/70 border border-luxury-border/60 rounded-xl p-5 sm:p-6">
-                    <h4 className="text-xs uppercase tracking-wider font-semibold text-luxury-textPrimary mb-3 flex items-center gap-2">
-                      <MapPin className="w-4 h-4 text-luxury-gold" />
-                      Key Service Municipalities & Destinations:
-                    </h4>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                      {area.cities && area.cities.map((city, cIdx) => (
-                        <div
-                          key={cIdx}
-                          className="flex items-center gap-2 p-2 rounded-lg bg-luxury-surface border border-luxury-border text-xs text-luxury-textPrimary"
-                        >
-                          <CheckCircle2 className="w-3.5 h-3.5 text-luxury-gold shrink-0" />
-                          <span>{city}</span>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="mt-4 pt-3 border-t border-luxury-border/50 text-[11px] text-luxury-textMuted flex items-center gap-2">
-                      <Compass className="w-3.5 h-3.5 text-luxury-gold shrink-0" />
-                      <span>Custom regional itineraries and multi-city stops available upon request.</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Unlisted Area Note */}
-          <div className="mt-16 bg-gradient-to-r from-luxury-surface via-luxury-card to-luxury-surface border border-luxury-border rounded-xl p-6 sm:p-8 text-center max-w-3xl mx-auto shadow-luxury">
-            <h4 className="font-serif text-xl text-luxury-textPrimary mb-2">
-              Traveling to a Location Outside Our Primary Hubs?
-            </h4>
-            <p className="text-xs sm:text-sm text-luxury-textSecondary mb-6 leading-relaxed">
-              We frequently accommodate long-distance interstate transfers and executive travel throughout neighboring Mid-Atlantic corridors. Submit your pickup and drop-off addresses for a custom quote.
+          <div className="max-w-3xl mx-auto text-center space-y-4">
+            <span className="text-[11px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-luxury-gold">
+              REGIONAL EXCELLENCE
+            </span>
+            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal text-white tracking-tight">
+              Focused Ground Coverage Across the Mid-Atlantic
+            </h2>
+            <p className="text-sm sm:text-base text-zinc-300 leading-relaxed font-normal">
+              We do not claim vague nationwide coverage. We concentrate our fleet, chauffeurs, and dispatch intelligence strictly across four confirmed, high-demand regional territories: Pennsylvania, New York, New Jersey, and Washington D.C.
             </p>
-            <Link to="/quote">
-              <Button size="md" variant="secondary" className="text-xs uppercase tracking-wider">
-                Submit Custom Itinerary Quote
-              </Button>
-            </Link>
           </div>
         </div>
       </section>
 
-      <CtaBanner />
+      {/* 2. Interactive Regional Explorer */}
+      <section className="py-20 md:py-28 bg-[#151517] border-y border-luxury-border">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Region Selector Tabs */}
+          <div className="flex flex-wrap items-center justify-center gap-3 mb-12 sm:mb-16">
+            {regions.map((region) => (
+              <button
+                key={region.id}
+                onClick={() => setSelectedRegion(region.id)}
+                className={`px-6 py-3 rounded-full text-xs sm:text-sm font-semibold tracking-wider uppercase transition-all duration-200 focus:outline-none ${
+                  selectedRegion === region.id
+                    ? 'bg-luxury-gold text-luxury-bg shadow-luxury-gold'
+                    : 'bg-luxury-card text-zinc-400 hover:text-white border border-luxury-border'
+                }`}
+              >
+                {region.state}
+              </button>
+            ))}
+          </div>
+
+          {/* Active Region Detailed Layout */}
+          <div className="bg-luxury-card border border-luxury-border rounded-3xl p-8 sm:p-12 shadow-2xl">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+              {/* Left Column: Region Details */}
+              <div className="lg:col-span-6 space-y-6">
+                <div>
+                  <span className="px-3.5 py-1 rounded-full bg-luxury-gold/15 border border-luxury-gold/30 text-[10px] uppercase tracking-wider text-luxury-gold font-semibold inline-block mb-3">
+                    {activeRegion.status}
+                  </span>
+                  <h3 className="font-serif text-3xl sm:text-4xl font-normal text-white">
+                    {activeRegion.state}
+                  </h3>
+                </div>
+
+                <p className="text-sm sm:text-base text-zinc-300 leading-relaxed font-normal">
+                  {activeRegion.description}
+                </p>
+
+                {/* Airport Hub Connections */}
+                <div className="p-4 rounded-xl bg-luxury-surface border border-luxury-border">
+                  <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-luxury-gold mb-2">
+                    <Plane className="w-4 h-4" />
+                    <span>Connected Airport Gateways:</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {activeRegion.airports.map((ap, apIdx) => (
+                      <span
+                        key={apIdx}
+                        className="px-3 py-1 rounded-lg bg-black/50 border border-white/10 text-xs text-zinc-200"
+                      >
+                        {ap}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="pt-2">
+                  <Link
+                    to="/book-now"
+                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-luxury-gold text-luxury-bg font-semibold text-xs uppercase tracking-wider hover:bg-luxury-goldHover transition-all shadow-luxury-gold"
+                  >
+                    <span>Request Travel in {activeRegion.state}</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+              </div>
+
+              {/* Right Column: Confirmed Cities & Corridors */}
+              <div className="lg:col-span-6 bg-luxury-surface border border-luxury-border rounded-2xl p-6 sm:p-8 space-y-4">
+                <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-white">
+                  <MapPin className="w-4 h-4 text-luxury-gold" />
+                  <span>Key Cities & Commercial Corridors</span>
+                </div>
+
+                <ul className="divide-y divide-white/5 space-y-3 pt-2">
+                  {activeRegion.cities.map((city, cIdx) => (
+                    <li key={cIdx} className="pt-3 flex items-start gap-3 text-xs sm:text-sm text-zinc-300">
+                      <CheckCircle2 className="w-4 h-4 text-luxury-gold shrink-0 mt-0.5" />
+                      <span>{city}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. Location-Based Enquiry CTA */}
+      <section className="py-20 md:py-28 bg-[#0B0B0C] text-center border-t border-luxury-border">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal text-white mb-4 tracking-tight">
+            Planning a Route Beyond Our Core Corridors?
+          </h2>
+          <p className="text-sm sm:text-base text-zinc-400 max-w-xl mx-auto mb-8 font-normal">
+            For specialized long-distance charters, multi-day roadshows, or interstate itineraries originating in our coverage zones, our executive dispatch desk will craft a customized itinerary.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link
+              to="/book-now"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-luxury-gold text-luxury-bg font-semibold text-xs sm:text-sm uppercase tracking-wider hover:bg-luxury-goldHover transition-all shadow-luxury-gold hover:shadow-luxury-glow w-full sm:w-auto"
+            >
+              <span>Request a Quote</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link
+              to="/contact"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white font-medium text-xs sm:text-sm tracking-wider transition-all w-full sm:w-auto"
+            >
+              <span>Contact Dispatch</span>
+            </Link>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };

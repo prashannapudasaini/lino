@@ -1,124 +1,149 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Users, Briefcase, ArrowRight } from 'lucide-react';
+import { Users, Briefcase, Check, ArrowRight, Sparkles } from 'lucide-react';
 
 const featuredVehicles = [
   {
-    name: "Executive Sedan",
-    image: "https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=800&q=80",
+    name: "Executive Luxury Sedan",
+    subtitle: "Mercedes-Benz S-Class / Cadillac CT6",
+    category: "Sedan",
+    image: "https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=1200&q=80",
     passengers: 3,
-    bags: 3,
-    href: "/fleet"
+    luggage: 3,
+    features: ["Acoustic Double-Glazing", "Nappa Leather Recliners", "Wi-Fi & Fast Charging"]
   },
   {
-    name: "Luxury SUV",
-    image: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=800&q=80",
+    name: "Executive Luxury SUV",
+    subtitle: "Cadillac Escalade ESV / Lincoln Navigator L",
+    category: "SUV",
+    image: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1200&q=85",
     passengers: 6,
-    bags: 6,
-    href: "/fleet"
+    luggage: 6,
+    features: ["Extended Wheelbase Luggage", "Second-Row Captain Chairs", "All-Wheel Drive Traction"]
+  },
+  {
+    name: "Mercedes Executive Sprinter",
+    subtitle: "Custom Executive Jet-Class Cabin",
+    category: "Executive Van",
+    image: "https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=1200&q=80",
+    passengers: 14,
+    luggage: 12,
+    features: ["Full 6'4\" Standing Cabin", "Executive Worktables", "4K Media & HDMI Presentation"]
   }
 ];
 
 const FleetShowcase = () => {
   return (
-    <section className="py-20 md:py-24 bg-[#0B0B0C] text-white relative overflow-hidden">
+    <section className="py-20 md:py-28 bg-[#151517] text-white relative overflow-hidden border-t border-luxury-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          {/* Left Column: Dramatic Front Grille Photo & Editorial Text */}
-          <div className="lg:col-span-6 relative rounded-3xl overflow-hidden bg-[#151517] border border-white/10 min-h-[420px] flex flex-col justify-end p-8 sm:p-10 shadow-2xl">
-            {/* Background Cadillac Escalade Grille Image */}
-            <div className="absolute inset-0 z-0">
-              <img
-                src="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1200&q=85"
-                alt="Cadillac Escalade Luxury SUV Grille"
-                className="w-full h-full object-cover object-left-top filter brightness-[0.45] contrast-[1.2]"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0B0B0C] via-[#0B0B0C]/60 to-transparent" />
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#0B0B0C]/40 to-[#0B0B0C]" />
-            </div>
-
-            {/* Overlaid Editorial Content */}
-            <div className="relative z-10 max-w-md space-y-4">
-              <span className="text-[10px] sm:text-xs uppercase tracking-[0.25em] font-semibold text-luxury-gold block">
+        {/* Section Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 md:mb-16">
+          <div className="max-w-xl">
+            <div className="inline-flex items-center gap-2 mb-2">
+              <span className="w-6 h-[1px] bg-luxury-gold inline-block"></span>
+              <span className="text-[11px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-luxury-gold">
                 OUR FLEET
               </span>
+            </div>
+            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal tracking-tight text-white leading-[1.12]">
+              Travel in a Class of Its Own
+            </h2>
+          </div>
 
-              <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal tracking-tight text-white leading-[1.1]">
-                Travel in a Class of Its Own
-              </h2>
+          <div className="max-w-md space-y-3">
+            <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed font-normal">
+              Our curated fleet of pristine executive vehicles offers the ideal harmony of understated elegance, cutting-edge acoustic isolation, and uncompromising safety.
+            </p>
+            <Link
+              to="/fleet"
+              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-luxury-gold hover:text-luxury-goldHover transition-colors group"
+            >
+              <span>Explore Full Fleet Details</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
+        </div>
 
-              <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-normal">
-                Our fleet of premium vehicles offers the perfect combination of luxury, comfort, and reliability. Choose the vehicle that fits your journey.
-              </p>
+        {/* 3 Luxury Automotive Editorial Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+          {featuredVehicles.map((vehicle, idx) => (
+            <div
+              key={idx}
+              className="bg-luxury-card border border-luxury-border rounded-2xl overflow-hidden shadow-2xl flex flex-col justify-between group hover:border-luxury-gold/50 transition-all duration-300 hover:-translate-y-1"
+            >
+              <div>
+                {/* Vehicle Photography */}
+                <div className="relative h-56 sm:h-64 w-full overflow-hidden bg-black/80">
+                  <img
+                    src={vehicle.image}
+                    alt={vehicle.name}
+                    className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 filter brightness-95"
+                    loading="lazy"
+                  />
+                  <div className="absolute top-4 left-4">
+                    <span className="px-3 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/10 text-[10px] uppercase tracking-wider font-semibold text-luxury-gold">
+                      {vehicle.category}
+                    </span>
+                  </div>
+                </div>
 
-              <div className="pt-2">
+                {/* Card Content */}
+                <div className="p-6 space-y-4">
+                  <div>
+                    <h3 className="font-serif text-xl sm:text-2xl font-normal text-white group-hover:text-luxury-gold transition-colors">
+                      {vehicle.name}
+                    </h3>
+                    <p className="text-xs text-zinc-400 mt-0.5">
+                      {vehicle.subtitle}
+                    </p>
+                  </div>
+
+                  {/* Capacities */}
+                  <div className="flex items-center gap-4 py-3 border-y border-white/5 text-xs text-zinc-300">
+                    <div className="flex items-center gap-1.5">
+                      <Users className="w-4 h-4 text-luxury-gold" />
+                      <span>Up to {vehicle.passengers} Passengers</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <Briefcase className="w-4 h-4 text-luxury-gold" />
+                      <span>{vehicle.luggage} Bags</span>
+                    </div>
+                  </div>
+
+                  {/* Features List */}
+                  <ul className="space-y-1.5 text-xs text-zinc-400">
+                    {vehicle.features.map((feat, fIdx) => (
+                      <li key={fIdx} className="flex items-center gap-2">
+                        <Check className="w-3.5 h-3.5 text-luxury-gold shrink-0" />
+                        <span>{feat}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              {/* Card Footer Action */}
+              <div className="p-6 pt-0">
                 <Link
-                  to="/fleet"
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-luxury-gold text-luxury-bg font-semibold text-xs uppercase tracking-wider hover:bg-luxury-goldHover transition-all shadow-luxury-gold active:scale-95"
+                  to="/book-now"
+                  className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-white/5 hover:bg-luxury-gold hover:text-luxury-bg border border-white/10 text-xs font-semibold uppercase tracking-wider text-white transition-all duration-200"
                 >
-                  <span>Explore Our Fleet</span>
+                  <span>Request This Vehicle</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
             </div>
-          </div>
-
-          {/* Right Column: Two Featured Vehicle Cards */}
-          <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-5">
-            {featuredVehicles.map((vehicle, idx) => (
-              <div
-                key={idx}
-                className="bg-[#151517] border border-white/10 rounded-2xl overflow-hidden shadow-2xl flex flex-col justify-between group hover:border-luxury-gold/50 transition-all duration-300"
-              >
-                {/* Vehicle Studio Photography */}
-                <div className="relative h-48 sm:h-52 w-full overflow-hidden bg-black/60 flex items-center justify-center p-4">
-                  <img
-                    src={vehicle.image}
-                    alt={vehicle.name}
-                    className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 rounded-lg filter brightness-95"
-                  />
-                </div>
-
-                {/* Card Bottom: Title, Capacities, and Arrow */}
-                <div className="p-5 flex items-center justify-between gap-3 border-t border-white/5 bg-[#121214]">
-                  <div>
-                    <h3 className="font-serif text-lg font-medium text-white group-hover:text-luxury-gold transition-colors">
-                      {vehicle.name}
-                    </h3>
-
-                    <div className="flex items-center gap-3 text-[11px] text-zinc-400 mt-1">
-                      <div className="flex items-center gap-1">
-                        <Users className="w-3.5 h-3.5 text-luxury-gold" />
-                        <span>{vehicle.passengers} Passengers</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Briefcase className="w-3.5 h-3.5 text-luxury-gold" />
-                        <span>{vehicle.bags} Bags</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <Link
-                    to="/quote"
-                    className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center text-zinc-300 group-hover:bg-luxury-gold group-hover:text-luxury-bg group-hover:border-luxury-gold transition-all shrink-0"
-                    title="Select Vehicle"
-                  >
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
+          ))}
         </div>
 
-        {/* Mobile Full Fleet Button */}
-        <div className="mt-8 text-center sm:hidden">
+        {/* Bottom CTA Strip */}
+        <div className="mt-12 text-center">
           <Link
             to="/fleet"
-            className="inline-flex items-center justify-center gap-1.5 w-full py-3 rounded-full border border-white/20 text-xs uppercase tracking-wider text-white font-semibold"
+            className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-luxury-gold text-luxury-bg font-semibold text-xs uppercase tracking-wider hover:bg-luxury-goldHover transition-all shadow-luxury-gold hover:shadow-luxury-glow"
           >
-            <span>View Full Fleet</span>
-            <ArrowRight className="w-3.5 h-3.5" />
+            <span>Explore Our Fleet</span>
+            <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </div>

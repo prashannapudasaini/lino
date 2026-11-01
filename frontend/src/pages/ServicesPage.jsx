@@ -1,184 +1,351 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { Plane, Briefcase, Clock, Award, CheckCircle2, ArrowRight } from 'lucide-react';
+import { Plane, Briefcase, Award, Clock, Compass, ShieldCheck, Check, ArrowRight } from 'lucide-react';
 import PageHero from '../components/common/PageHero';
-import SectionHeading from '../components/common/SectionHeading';
-import Button from '../components/common/Button';
-import CtaBanner from '../components/home/CtaBanner';
-import { getServices } from '../services/api';
 
-const defaultServices = [
+const services = [
   {
-    title: "Airport Transportation",
-    slug: "airport-transportation",
-    short_description: "Seamless airport arrivals and executive departures with curbside coordination, flight schedule tracking, and terminal meet-and-greet.",
-    full_description: "Everest Executive Limo eliminates the stress of airport transit across MDT, PHL, JFK, LGA, and EWR. Your chauffeur monitors your flight status, welcomes you at baggage claim or curbside, assists with all luggage, and escorts you smoothly to your private vehicle.",
+    id: "airport",
+    num: "01",
+    title: "Airport Transfers",
+    layout: "image-left",
     icon: Plane,
-    image_url: "https://images.unsplash.com/photo-1508873696983-2df5293cb395?auto=format&fit=crop&w=1200&q=80",
-    features: [
-      "Inbound Flight Schedule Monitoring & Delay Accommodation",
-      "Terminal Baggage Claim Meet & Greet with Personalized Tablet Name Sign",
-      "Complimentary 45-Minute Waiting Period for Commercial Flights",
-      "Full Baggage Handling from Terminal to Vehicle",
-      "Direct Regional Intercity Connections to Pennsylvania & Tri-State"
+    image: "https://images.unsplash.com/photo-1508873696983-2df5293cb395?auto=format&fit=crop&w=1400&q=85",
+    description: "Flawless arrivals and timely departures for all major regional commercial hubs including MDT, PHL, JFK, LGA, and EWR, as well as private aviation FBOs. Your chauffeur coordinates flight status, provides terminal meet-and-greet, and handles all luggage.",
+    benefits: [
+      "Curbside or inside baggage-claim meet and greet",
+      "Complimentary 45-minute waiting period for commercial flights",
+      "Flight arrival monitoring for early touchdowns or delays",
+      "Assistance with all luggage items directly to your vehicle"
     ]
   },
   {
-    title: "Corporate & Executive Travel",
-    slug: "corporate-travel",
-    short_description: "Tailored executive mobility for corporate meetings, multi-stop roadshows, and discerning executives who value privacy and punctuality.",
-    full_description: "Designed specifically for corporate executives, visiting board members, and business leaders who demand an uninterrupted mobile workspace. Travel between meetings in complete confidentiality and comfort.",
+    id: "corporate",
+    num: "02",
+    title: "Corporate Transportation",
+    layout: "image-right",
     icon: Briefcase,
-    image_url: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1200&q=80",
-    features: [
-      "Direct Corporate Account Billing & Detailed Travel Invoicing",
-      "Confidential Cabin Environment with Strict Non-Disclosure Standards",
-      "High-Speed Mobile Connectivity & In-Cabin Laptop Power",
-      "Multi-City Roadshow Itinerary Management",
-      "Seamless Transportation for Visiting VIP Guests & Clients"
+    image: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1400&q=85",
+    description: "Engineered for executives, board members, and business delegations requiring seamless punctuality, mobile office productivity, and absolute discretion between meetings and financial centers.",
+    benefits: [
+      "Strict non-disclosure standards for total meeting confidentiality",
+      "Quiet acoustic cabins equipped with high-speed charging",
+      "Multi-city roadshow coordination and timetable management",
+      "Direct corporate billing and itemized travel invoicing"
     ]
   },
   {
-    title: "Private Hourly Chauffeur",
-    slug: "hourly-chauffeur",
-    short_description: "Dedicated chauffeur and premium luxury vehicle at your continuous disposal for meetings, dinners, or bespoke regional itineraries.",
-    full_description: "Experience total schedule freedom with our as-directed hourly service. Your chauffeur remains on standby wherever your day or evening takes you, ready to depart at your command without parking or transit delays.",
+    id: "executive",
+    num: "03",
+    title: "Executive Travel",
+    layout: "full-width-overlay",
+    icon: ShieldCheck,
+    image: "https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=1800&q=85",
+    description: "Premier intercity travel connecting Central Pennsylvania, New York City, Philadelphia, New Jersey, and Washington D.C. Avoid the hassles of regional flight delays and crowded train stations with private door-to-door luxury.",
+    benefits: [
+      "Direct point-to-point transit with zero layovers or security queues",
+      "Ergonomic Nappa leather seating for restful long-distance journeys",
+      "Personalized climate control and chilled refreshments",
+      "Custom itineraries and preferred route selection"
+    ]
+  },
+  {
+    id: "chauffeur",
+    num: "04",
+    title: "Private Chauffeur Service",
+    layout: "image-left",
     icon: Clock,
-    image_url: "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=1200&q=80",
-    features: [
-      "Total Schedule Freedom — Change Itinerary Stops As Directed",
-      "Chauffeur Remains Stationed On-Site Throughout All Stops",
-      "Zero Parking Hassles, City Congestion, or Rideshare Waits",
-      "Ideal for Dinners, Shopping, Medical Appointments & Regional Tours",
-      "Convenient Extension of Hours Upon Dispatch Request"
+    image: "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=1400&q=85",
+    description: "Dedicated as-directed hourly service with a luxury vehicle and driver on continuous standby. Depart at your leisure, alter stops dynamically, and enjoy total flexibility without parking concerns.",
+    benefits: [
+      "Chauffeur remains on-site throughout your schedule",
+      "Unlimited spontaneous stops within your reserved charter window",
+      "Zero parking headaches or rideshare wait times",
+      "Ideal for multi-meeting days, shopping itineraries, and dining"
     ]
   },
   {
-    title: "Special Events Transportation",
-    slug: "special-events",
-    short_description: "Sophisticated transportation for galas, milestone celebrations, weddings, and high-profile private occasions.",
-    full_description: "Elevate your most cherished milestones. From weddings and anniversary celebrations to black-tie charity galas, our pristine fleet and immaculately attired chauffeurs provide red-carpet elegance from departure to arrival.",
+    id: "events",
+    num: "05",
+    title: "Special Events",
+    layout: "image-right",
     icon: Award,
-    image_url: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80",
-    features: [
-      "Red-Carpet Chauffeur Service & Immaculate Professional Presentation",
-      "Bridal Party, VIP Family, and Executive Delegation Logistics",
-      "Vehicle Detailing & Flawless Cleanliness Prior to Every Event",
-      "Coordinated Timelines Working Directly with Event Coordinators",
-      "VIP Arrival Staging & Coordinated Curbside Pickups"
+    image: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1400&q=85",
+    description: "Red-carpet transportation for milestone galas, black-tie celebrations, weddings, and high-profile private occasions. We coordinate with event planners to ensure every arrival is memorable and polished.",
+    benefits: [
+      "Flawlessly detailed luxury sedans, SUVs, and Sprinters",
+      "Attentive chauffeurs in formal executive attire",
+      "Staged VIP arrivals and synchronized group departures",
+      "Coordination with venue concierges and wedding planners"
+    ]
+  },
+  {
+    id: "tours",
+    num: "06",
+    title: "City Tours",
+    layout: "asymmetric-card",
+    icon: Compass,
+    image: "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=1400&q=85",
+    description: "Curated regional private tours exploring the landmarks of Pennsylvania, historic Philadelphia, Manhattan sights, or the scenic rolling hills of Lancaster and Hershey in uncompromising luxury.",
+    benefits: [
+      "Customized private tour pacing without rigid group timetables",
+      "Knowledgeable, courteous chauffeurs familiar with local landmarks",
+      "Comfortable panoramic views with privacy tinting",
+      "Flexible stop durations for photography, dining, and sightseeing"
     ]
   }
 ];
 
 const ServicesPage = () => {
-  const [servicesList, setServicesList] = useState(defaultServices);
-
-  useEffect(() => {
-    const fetchServices = async () => {
-      try {
-        const data = await getServices();
-        if (data && data.length > 0) {
-          // Merge features
-          const formatted = data.map(item => ({
-            ...item,
-            features: typeof item.features_json === 'string' ? JSON.parse(item.features_json || '[]') : []
-          }));
-          setServicesList(formatted);
-        }
-      } catch (err) {
-        // Keeps defaults
-      }
-    };
-    fetchServices();
-  }, []);
-
   return (
-    <div>
+    <div className="bg-luxury-bg text-white">
+      {/* Hero */}
       <PageHero
-        eyebrow="Executive Services"
-        title="Bespoke Luxury Chauffeur & Executive Mobility"
-        subtitle="Meticulously coordinated ground transportation tailored for executive business itineraries, airport arrivals, and private milestones."
-        breadcrumb={[{ name: "Services" }]}
-        backgroundImage="https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1600&q=80"
+        eyebrow="OUR SERVICES"
+        title="Exceptional Transportation for Every Occasion."
+        subtitle="Professional chauffeur services designed around your journey."
+        breadcrumb={[{ name: "Our Services" }]}
+        backgroundImage="https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=2200&q=85"
       />
 
-      {/* Services List Deep-Dives */}
-      <section className="py-20 md:py-28 bg-luxury-bg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20 md:space-y-28">
-          {servicesList.map((svc, index) => {
-            const isReversed = index % 2 === 1;
+      {/* Services List with Distinct Alternating Layouts */}
+      <div className="py-20 md:py-28 space-y-24 md:space-y-32">
+        {services.map((svc) => {
+          const IconComp = svc.icon;
+
+          if (svc.layout === "image-left") {
             return (
-              <div
-                key={index}
-                className={`grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center ${
-                  isReversed ? 'lg:flex-row-reverse' : ''
-                }`}
-              >
-                {/* Image Composition */}
-                <div className={`lg:col-span-6 ${isReversed ? 'lg:order-2' : 'lg:order-1'}`}>
-                  <div className="relative rounded-2xl overflow-hidden border border-luxury-border shadow-2xl group">
-                    <img
-                      src={svc.image_url}
-                      alt={svc.title}
-                      className="w-full h-80 sm:h-96 object-cover object-center group-hover:scale-105 transition-transform duration-700 filter brightness-95"
-                      loading="lazy"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-luxury-bg/80 via-transparent to-transparent" />
+              <section key={svc.id} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+                  <div className="lg:col-span-6 relative">
+                    <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-luxury-border group">
+                      <img
+                        src={svc.image}
+                        alt={svc.title}
+                        className="w-full h-[400px] sm:h-[480px] object-cover object-center group-hover:scale-105 transition-transform duration-700 filter brightness-95"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                      <div className="absolute top-6 left-6 w-10 h-10 rounded-xl bg-black/70 backdrop-blur-md border border-white/10 flex items-center justify-center text-luxury-gold">
+                        <IconComp className="w-5 h-5" />
+                      </div>
+                    </div>
                   </div>
-                </div>
 
-                {/* Content */}
-                <div className={`lg:col-span-6 space-y-6 ${isReversed ? 'lg:order-1' : 'lg:order-2'}`}>
-                  <div className="inline-flex items-center gap-2">
-                    <span className="w-6 h-[1px] bg-luxury-gold/60 inline-block"></span>
-                    <span className="text-xs uppercase tracking-[0.25em] font-semibold text-luxury-gold">
-                      Service Class 0{index + 1}
+                  <div className="lg:col-span-6 space-y-6">
+                    <span className="font-mono text-sm font-bold text-luxury-gold/50">
+                      {svc.num} &mdash; SERVICE
                     </span>
-                  </div>
+                    <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal tracking-tight text-white leading-[1.15]">
+                      {svc.title}
+                    </h2>
+                    <p className="text-sm sm:text-base text-zinc-300 leading-relaxed font-normal">
+                      {svc.description}
+                    </p>
 
-                  <h2 className="font-serif text-3xl sm:text-4xl font-normal text-luxury-textPrimary">
-                    {svc.title}
-                  </h2>
-
-                  <p className="text-sm sm:text-base text-luxury-textSecondary leading-relaxed">
-                    {svc.full_description || svc.short_description}
-                  </p>
-
-                  {/* Feature Highlights */}
-                  {svc.features && svc.features.length > 0 && (
                     <div className="space-y-2.5 pt-2">
-                      {svc.features.map((feat, fIdx) => (
-                        <div key={fIdx} className="flex items-start gap-2.5 text-xs sm:text-sm text-luxury-textPrimary">
-                          <CheckCircle2 className="w-4 h-4 text-luxury-gold shrink-0 mt-0.5" />
-                          <span>{feat}</span>
+                      <h4 className="text-xs uppercase tracking-wider text-luxury-gold font-semibold">
+                        Client Privileges:
+                      </h4>
+                      {svc.benefits.map((b, bIdx) => (
+                        <div key={bIdx} className="flex items-start gap-2.5 text-xs sm:text-sm text-zinc-300">
+                          <Check className="w-4 h-4 text-luxury-gold shrink-0 mt-0.5" />
+                          <span>{b}</span>
                         </div>
                       ))}
                     </div>
-                  )}
 
-                  <div className="pt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-                    <Link to="/quote">
-                      <Button size="md" variant="primary" className="text-xs uppercase tracking-wider font-bold">
-                        Request Quote for {svc.title} <ArrowRight className="w-3.5 h-3.5 ml-2" />
-                      </Button>
-                    </Link>
-
-                    {svc.slug === "airport-transportation" && (
-                      <Link to="/airport-transportation">
-                        <Button size="md" variant="secondary" className="text-xs uppercase tracking-wider">
-                          View Airport Details
-                        </Button>
+                    <div className="pt-4">
+                      <Link
+                        to="/book-now"
+                        className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-luxury-gold text-luxury-bg font-semibold text-xs uppercase tracking-wider hover:bg-luxury-goldHover transition-all shadow-luxury-gold"
+                      >
+                        <span>Request a Quote</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
                       </Link>
-                    )}
+                    </div>
+                  </div>
+                </div>
+              </section>
+            );
+          }
+
+          if (svc.layout === "image-right") {
+            return (
+              <section key={svc.id} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+                  <div className="lg:col-span-6 space-y-6 order-2 lg:order-1">
+                    <span className="font-mono text-sm font-bold text-luxury-gold/50">
+                      {svc.num} &mdash; SERVICE
+                    </span>
+                    <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal tracking-tight text-white leading-[1.15]">
+                      {svc.title}
+                    </h2>
+                    <p className="text-sm sm:text-base text-zinc-300 leading-relaxed font-normal">
+                      {svc.description}
+                    </p>
+
+                    <div className="space-y-2.5 pt-2">
+                      <h4 className="text-xs uppercase tracking-wider text-luxury-gold font-semibold">
+                        Client Privileges:
+                      </h4>
+                      {svc.benefits.map((b, bIdx) => (
+                        <div key={bIdx} className="flex items-start gap-2.5 text-xs sm:text-sm text-zinc-300">
+                          <Check className="w-4 h-4 text-luxury-gold shrink-0 mt-0.5" />
+                          <span>{b}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="pt-4">
+                      <Link
+                        to="/book-now"
+                        className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-luxury-gold text-luxury-bg font-semibold text-xs uppercase tracking-wider hover:bg-luxury-goldHover transition-all shadow-luxury-gold"
+                      >
+                        <span>Request a Quote</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
+                  </div>
+
+                  <div className="lg:col-span-6 relative order-1 lg:order-2">
+                    <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-luxury-border group">
+                      <img
+                        src={svc.image}
+                        alt={svc.title}
+                        className="w-full h-[400px] sm:h-[480px] object-cover object-center group-hover:scale-105 transition-transform duration-700 filter brightness-95"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                      <div className="absolute top-6 right-6 w-10 h-10 rounded-xl bg-black/70 backdrop-blur-md border border-white/10 flex items-center justify-center text-luxury-gold">
+                        <IconComp className="w-5 h-5" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            );
+          }
+
+          if (svc.layout === "full-width-overlay") {
+            return (
+              <section key={svc.id} className="relative py-24 md:py-32 overflow-hidden border-y border-luxury-border">
+                <div className="absolute inset-0 z-0">
+                  <img
+                    src={svc.image}
+                    alt={svc.title}
+                    className="w-full h-full object-cover object-center filter brightness-[0.25] contrast-[1.2]"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-r from-luxury-bg via-luxury-bg/85 to-transparent w-full lg:w-[65%]" />
+                </div>
+
+                <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                  <div className="max-w-2xl space-y-6">
+                    <span className="font-mono text-sm font-bold text-luxury-gold">
+                      {svc.num} &mdash; FEATURED SERVICE
+                    </span>
+                    <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal tracking-tight text-white leading-[1.12]">
+                      {svc.title}
+                    </h2>
+                    <p className="text-sm sm:text-base text-zinc-300 leading-relaxed font-normal">
+                      {svc.description}
+                    </p>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                      {svc.benefits.map((b, bIdx) => (
+                        <div key={bIdx} className="flex items-start gap-2.5 text-xs text-zinc-300">
+                          <Check className="w-4 h-4 text-luxury-gold shrink-0 mt-0.5" />
+                          <span>{b}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="pt-4">
+                      <Link
+                        to="/book-now"
+                        className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-luxury-gold text-luxury-bg font-semibold text-xs uppercase tracking-wider hover:bg-luxury-goldHover transition-all shadow-luxury-gold"
+                      >
+                        <span>Request a Quote</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            );
+          }
+
+          // asymmetric card layout for tours
+          return (
+            <section key={svc.id} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="bg-luxury-card border border-luxury-border rounded-3xl p-8 sm:p-12 md:p-14 shadow-2xl relative overflow-hidden">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+                  <div className="lg:col-span-7 space-y-6">
+                    <span className="font-mono text-sm font-bold text-luxury-gold/50">
+                      {svc.num} &mdash; SERVICE
+                    </span>
+                    <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal tracking-tight text-white leading-[1.15]">
+                      {svc.title}
+                    </h2>
+                    <p className="text-sm sm:text-base text-zinc-300 leading-relaxed font-normal">
+                      {svc.description}
+                    </p>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                      {svc.benefits.map((b, bIdx) => (
+                        <div key={bIdx} className="flex items-start gap-2.5 text-xs text-zinc-300">
+                          <Check className="w-4 h-4 text-luxury-gold shrink-0 mt-0.5" />
+                          <span>{b}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="pt-4">
+                      <Link
+                        to="/book-now"
+                        className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-luxury-gold text-luxury-bg font-semibold text-xs uppercase tracking-wider hover:bg-luxury-goldHover transition-all shadow-luxury-gold"
+                      >
+                        <span>Request a Quote</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
+                  </div>
+
+                  <div className="lg:col-span-5 relative">
+                    <div className="relative rounded-2xl overflow-hidden shadow-xl border border-white/10 h-72 sm:h-80">
+                      <img
+                        src={svc.image}
+                        alt={svc.title}
+                        className="w-full h-full object-cover object-center filter brightness-95"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
-            );
-          })}
+            </section>
+          );
+        })}
+      </div>
+
+      {/* Final CTA */}
+      <section className="py-24 md:py-32 bg-[#0B0B0C] border-t border-luxury-border text-center">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal text-white mb-4 tracking-tight">
+            Whatever the Occasion, Travel in Excellence.
+          </h2>
+          <p className="text-sm sm:text-base text-zinc-400 max-w-xl mx-auto mb-8 font-normal">
+            Our dispatch specialists are ready to tailor an all-inclusive quotation for your exact itinerary.
+          </p>
+          <Link
+            to="/book-now"
+            className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-luxury-gold text-luxury-bg font-semibold text-xs sm:text-sm uppercase tracking-wider hover:bg-luxury-goldHover transition-all shadow-luxury-gold hover:shadow-luxury-glow"
+          >
+            <span>Request a Ride</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
       </section>
-
-      <CtaBanner />
     </div>
   );
 };
