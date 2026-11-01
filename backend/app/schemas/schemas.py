@@ -269,3 +269,4 @@ class DashboardStats(BaseModel):
     total_services: int
     total_messages: int
     unread_messages: int
+

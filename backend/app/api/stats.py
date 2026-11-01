@@ -41,3 +41,4 @@ def get_dashboard_stats(
         total_messages=total_messages,
         unread_messages=unread_messages
     )
+

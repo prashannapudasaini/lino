@@ -258,3 +258,4 @@ const BookingDetailModal = ({ booking, onClose, onUpdated }) => {
 };
 
 export default BookingDetailModal;
+

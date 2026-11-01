@@ -66,3 +66,4 @@ def delete_service(
         raise HTTPException(status_code=404, detail="Service not found")
     db.delete(service)
     db.commit()
+

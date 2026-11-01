@@ -121,3 +121,4 @@ const PrivacyTermsPage = () => {
 };
 
 export default PrivacyTermsPage;
+

@@ -340,3 +340,4 @@ def seed_database(db: Session):
         db.add(sample_booking)
 
     db.commit()
+

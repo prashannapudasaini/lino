@@ -164,3 +164,4 @@ def delete_booking(
         raise HTTPException(status_code=404, detail="Booking enquiry not found")
     db.delete(booking)
     db.commit()
+

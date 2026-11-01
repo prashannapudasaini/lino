@@ -57,3 +57,4 @@ def get_me(current_user: User = Depends(get_current_user)) -> Any:
     Get current logged-in user profile.
     """
     return current_user
+

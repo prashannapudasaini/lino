@@ -53,3 +53,4 @@ def delete_service_area(
         raise HTTPException(status_code=404, detail="Service area not found")
     db.delete(area)
     db.commit()
+

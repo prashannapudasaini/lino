@@ -15,3 +15,4 @@ def concierge_chat(request: ChatRequest) -> Any:
     history_dicts = [{"role": h.role, "content": h.content} for h in (request.history or [])]
     result = get_concierge_response(request.message, history=history_dicts)
     return ChatResponse(**result)
+

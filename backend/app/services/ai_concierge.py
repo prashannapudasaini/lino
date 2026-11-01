@@ -123,3 +123,4 @@ def get_concierge_response(message: str, history: List[Dict[str, str]] = None) -
         "suggested_actions": ["Request a Quote", "Explore Fleet", "Airport Service", "Contact Dispatch"],
         "action_url": "/quote"
     }
+

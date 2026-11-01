@@ -284,3 +284,4 @@ const AdminBookingsPage = () => {
 };
 
 export default AdminBookingsPage;
+

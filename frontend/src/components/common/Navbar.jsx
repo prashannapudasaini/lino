@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Phone, ArrowRight, Shield } from 'lucide-react';
-import Button from './Button';
+import { Menu, X, ArrowRight } from 'lucide-react';
 
 const navLinks = [
   { name: 'Home', path: '/' },
-  { name: 'About Us', path: '/about' },
+  { name: 'About', path: '/about' },
   { name: 'Services', path: '/services' },
-  { name: 'Airports', path: '/airport-transportation' },
+  { name: 'Airport Transportation', path: '/airport-transportation' },
   { name: 'Service Areas', path: '/service-areas' },
   { name: 'Our Fleet', path: '/fleet' },
   { name: 'Contact', path: '/contact' },
@@ -42,7 +41,6 @@ const Navbar = () => {
     };
   }, [mobileMenuOpen]);
 
-  // Close mobile menu on route change
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [location.pathname]);
@@ -57,74 +55,73 @@ const Navbar = () => {
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           isScrolled
-            ? 'bg-luxury-bg/95 backdrop-blur-md border-b border-luxury-border py-3 shadow-luxury'
-            : 'bg-gradient-to-b from-black/80 via-black/40 to-transparent py-5'
+            ? 'bg-luxury-bg/95 backdrop-blur-md border-b border-luxury-border/80 py-3 shadow-2xl'
+            : 'bg-gradient-to-b from-black/90 via-black/50 to-transparent py-5'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
-            {/* Logo */}
-            <Link to="/" className="flex items-center gap-3 group focus:outline-none focus:ring-1 focus:ring-luxury-gold/50 rounded-lg p-1">
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-luxury-card to-luxury-surface border border-luxury-gold/40 flex items-center justify-center shadow-luxury-glow group-hover:border-luxury-gold transition-colors">
-                {/* Everest Mountain Geometric Crest */}
-                <svg className="w-6 h-6 text-luxury-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-                  <path d="M3 20L12 4l9 16H3z" />
-                  <path d="M8 20l4-7 4 7H8z" fill="currentColor" fillOpacity="0.2" />
+            {/* Everest Mountain Geometric Crest & Brand */}
+            <Link to="/" className="flex items-center gap-3 group focus:outline-none">
+              <div className="w-8 h-8 flex items-center justify-center text-luxury-gold shrink-0">
+                <svg className="w-7 h-7" viewBox="0 0 32 32" fill="none" stroke="currentColor">
+                  {/* Three Mountain Peaks Icon */}
+                  <path d="M4 24L16 6l12 18H4z" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M10 24l6-9 6 9H10z" fill="#C5A46D" fillOpacity="0.25" strokeWidth="1.5" />
+                  <path d="M16 15l-3 4.5h6L16 15z" fill="#C5A46D" />
                 </svg>
               </div>
               <div className="flex flex-col">
-                <span className="font-serif text-lg sm:text-xl font-bold tracking-wider text-luxury-textPrimary group-hover:text-luxury-gold transition-colors leading-tight">
+                <span className="font-serif text-base sm:text-lg font-bold tracking-[0.2em] text-white uppercase leading-tight group-hover:text-luxury-gold transition-colors">
                   EVEREST
                 </span>
-                <span className="text-[10px] tracking-[0.2em] uppercase text-luxury-gold font-medium">
-                  Executive Limo
+                <span className="text-[9px] tracking-[0.3em] uppercase text-luxury-gold font-medium leading-none mt-0.5">
+                  EXECUTIVE LIMO
                 </span>
               </div>
             </Link>
 
-            {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  className={`px-3 py-2 text-xs xl:text-sm tracking-wide rounded-md transition-all duration-200 font-medium ${
-                    isActive(link.path)
-                      ? 'text-luxury-gold bg-luxury-gold/10'
-                      : 'text-luxury-textSecondary hover:text-luxury-textPrimary hover:bg-white/5'
-                  }`}
-                >
-                  {link.name}
-                </Link>
-              ))}
+            {/* Desktop Navigation Links */}
+            <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
+              {navLinks.map((link) => {
+                const active = isActive(link.path);
+                return (
+                  <Link
+                    key={link.path}
+                    to={link.path}
+                    className={`relative text-xs tracking-wider font-medium transition-colors py-1 ${
+                      active
+                        ? 'text-white font-semibold'
+                        : 'text-zinc-300 hover:text-white'
+                    }`}
+                  >
+                    {link.name}
+                    {active && (
+                      <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-luxury-gold rounded-full" />
+                    )}
+                  </Link>
+                );
+              })}
             </nav>
 
-            {/* Header Right Actions */}
-            <div className="hidden sm:flex items-center gap-4">
-              <a
-                href="tel:+17175550199"
-                className="hidden xl:flex items-center gap-2 text-xs text-luxury-textSecondary hover:text-luxury-gold transition-colors font-medium tracking-wide"
-                title="Call 24/7 Dispatch"
+            {/* Header Right Action: Pill Button */}
+            <div className="hidden sm:flex items-center">
+              <Link
+                to="/quote"
+                className="inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-full bg-luxury-gold text-luxury-bg font-semibold text-xs uppercase tracking-wider hover:bg-luxury-goldHover transition-all duration-200 shadow-luxury-gold hover:shadow-luxury-glow active:scale-95"
               >
-                <div className="w-7 h-7 rounded-full bg-luxury-card border border-luxury-border flex items-center justify-center text-luxury-gold">
-                  <Phone className="w-3.5 h-3.5" />
-                </div>
-                <span>(717) 555-0199</span>
-              </a>
-
-              <Link to="/quote">
-                <Button size="sm" variant="primary" className="text-xs uppercase tracking-wider font-semibold">
-                  Get a Quote
-                </Button>
+                <span>Get a Quote</span>
+                <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
 
-            {/* Mobile Controls */}
-            <div className="flex items-center gap-2 sm:gap-3 lg:hidden">
-              <Link to="/quote" className="sm:hidden">
-                <Button size="sm" variant="primary" className="text-xs px-3 min-h-[38px]">
-                  Quote
-                </Button>
+            {/* Mobile Menu Toggle Button */}
+            <div className="flex items-center gap-3 lg:hidden">
+              <Link
+                to="/quote"
+                className="sm:hidden px-3.5 py-1.5 rounded-full bg-luxury-gold text-luxury-bg text-xs font-semibold uppercase tracking-wider"
+              >
+                Quote
               </Link>
 
               <button
@@ -132,28 +129,26 @@ const Navbar = () => {
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 aria-label="Toggle navigation menu"
                 aria-expanded={mobileMenuOpen}
-                className="p-2.5 rounded-lg bg-luxury-card border border-luxury-border text-luxury-textPrimary hover:text-luxury-gold hover:border-luxury-gold/50 transition-colors focus:outline-none focus:ring-2 focus:ring-luxury-gold/50 min-h-[44px] min-w-[44px] flex items-center justify-center"
+                className="p-2 text-zinc-300 hover:text-luxury-gold focus:outline-none min-h-[44px] min-w-[44px] flex items-center justify-center"
               >
-                {mobileMenuOpen ? <X className="w-5 h-5 text-luxury-gold" /> : <Menu className="w-5 h-5" />}
+                {mobileMenuOpen ? <X className="w-6 h-6 text-luxury-gold" /> : <Menu className="w-6 h-6" />}
               </button>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Mobile Drawer Navigation */}
+      {/* Mobile Menu Drawer */}
       <div
         className={`fixed inset-0 z-40 lg:hidden transition-all duration-300 ${
           mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
       >
-        {/* Backdrop */}
         <div
           className="absolute inset-0 bg-black/80 backdrop-blur-md"
           onClick={() => setMobileMenuOpen(false)}
         />
 
-        {/* Menu Drawer */}
         <div
           className={`absolute top-0 right-0 bottom-0 w-[85%] max-w-sm bg-luxury-bg border-l border-luxury-border p-6 flex flex-col justify-between shadow-2xl transition-transform duration-300 ${
             mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
@@ -161,19 +156,25 @@ const Navbar = () => {
         >
           <div>
             <div className="flex items-center justify-between pb-6 border-b border-luxury-border mb-6">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded bg-luxury-card border border-luxury-gold/40 flex items-center justify-center">
-                  <svg className="w-5 h-5 text-luxury-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path d="M3 20L12 4l9 16H3z" />
+              <div className="flex items-center gap-2.5">
+                <div className="w-7 h-7 text-luxury-gold">
+                  <svg className="w-7 h-7" viewBox="0 0 32 32" fill="none" stroke="currentColor">
+                    <path d="M4 24L16 6l12 18H4z" strokeWidth="2" />
+                    <path d="M10 24l6-9 6 9H10z" fill="#C5A46D" />
                   </svg>
                 </div>
-                <span className="font-serif text-base font-bold text-luxury-textPrimary">
-                  EVEREST EXECUTIVE
-                </span>
+                <div className="flex flex-col">
+                  <span className="font-serif text-sm font-bold text-white tracking-wider">
+                    EVEREST
+                  </span>
+                  <span className="text-[9px] text-luxury-gold tracking-widest uppercase">
+                    EXECUTIVE LIMO
+                  </span>
+                </div>
               </div>
               <button
                 onClick={() => setMobileMenuOpen(false)}
-                className="p-2 text-luxury-textSecondary hover:text-luxury-gold min-h-[44px] min-w-[44px] flex items-center justify-center"
+                className="p-2 text-zinc-400 hover:text-luxury-gold min-h-[44px] min-w-[44px] flex items-center justify-center"
                 aria-label="Close menu"
               >
                 <X className="w-5 h-5" />
@@ -185,10 +186,10 @@ const Navbar = () => {
                 <Link
                   key={link.path}
                   to={link.path}
-                  className={`flex items-center justify-between px-4 py-3 rounded-lg text-sm font-medium tracking-wide transition-colors ${
+                  className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium tracking-wide transition-colors ${
                     isActive(link.path)
                       ? 'text-luxury-gold bg-luxury-gold/10 font-semibold border-l-2 border-luxury-gold'
-                      : 'text-luxury-textSecondary hover:text-luxury-textPrimary hover:bg-white/5'
+                      : 'text-zinc-300 hover:text-white hover:bg-white/5'
                   }`}
                 >
                   <span>{link.name}</span>
@@ -199,23 +200,20 @@ const Navbar = () => {
           </div>
 
           <div className="pt-6 border-t border-luxury-border space-y-4">
-            <Link to="/quote" className="block w-full">
-              <Button size="md" variant="primary" className="w-full justify-center">
-                Request a Ride
-              </Button>
+            <Link
+              to="/quote"
+              className="flex items-center justify-center gap-2 w-full py-3 rounded-full bg-luxury-gold text-luxury-bg font-semibold text-xs uppercase tracking-wider shadow-luxury-gold"
+            >
+              <span>Request a Ride</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </Link>
 
             <a
               href="tel:+17175550199"
-              className="flex items-center justify-center gap-2 p-3 rounded-lg bg-luxury-card border border-luxury-border text-xs text-luxury-textSecondary hover:text-luxury-gold font-medium"
+              className="block text-center text-xs text-zinc-400 hover:text-luxury-gold transition-colors"
             >
-              <Phone className="w-4 h-4 text-luxury-gold" />
-              <span>Direct Line: +1 (717) 555-0199</span>
+              24/7 Dispatch: +1 (717) 555-0199
             </a>
-
-            <div className="text-center text-[11px] text-luxury-textMuted tracking-wider">
-              Serving PA, NY, NJ & Washington D.C.
-            </div>
           </div>
         </div>
       </div>

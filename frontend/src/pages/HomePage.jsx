@@ -1,28 +1,27 @@
 import React from 'react';
 import HeroSection from '../components/home/HeroSection';
-import TrustBar from '../components/home/TrustBar';
 import ServicesPreview from '../components/home/ServicesPreview';
 import FleetShowcase from '../components/home/FleetShowcase';
 import WhyChooseUs from '../components/home/WhyChooseUs';
 import AirportCoverage from '../components/home/AirportCoverage';
-import ServiceAreasMap from '../components/home/ServiceAreasMap';
-import HowItWorks from '../components/home/HowItWorks';
-import ExperienceValues from '../components/home/ExperienceValues';
-import CtaBanner from '../components/home/CtaBanner';
 
 const HomePage = () => {
   return (
-    <div className="relative">
+    <div className="relative overflow-x-hidden">
+      {/* 1. Hero with integrated trust strip */}
       <HeroSection />
-      <TrustBar />
+
+      {/* 2. Services Overview (Light background) */}
       <ServicesPreview />
+
+      {/* 3. Featured Fleet Showcase (Dark background) */}
       <FleetShowcase />
+
+      {/* 4. Why Choose Everest / Experience (Light background) */}
       <WhyChooseUs />
+
+      {/* 5. Seamless Airport Transfers (Dark background) */}
       <AirportCoverage />
-      <ServiceAreasMap />
-      <HowItWorks />
-      <ExperienceValues />
-      <CtaBanner />
     </div>
   );
 };

@@ -59,3 +59,4 @@ def root():
 @app.get("/api/health")
 def health_check():
     return {"status": "healthy", "service": "everest-limo-api"}
+

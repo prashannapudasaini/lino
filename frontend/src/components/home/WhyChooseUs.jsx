@@ -1,84 +1,85 @@
 import React from 'react';
-import { Shield, Sparkles, Clock, Compass, CheckCircle2 } from 'lucide-react';
-import SectionHeading from '../common/SectionHeading';
+import { Armchair, UserCheck, Clock, Compass } from 'lucide-react';
 
-const pillars = [
+const benefits = [
   {
-    icon: Shield,
-    title: "Executive Discretion & Vetting",
-    desc: "Every chauffeur undergoes stringent background checks, defensive driving certifications, and non-disclosure privacy agreements."
+    icon: Armchair,
+    title: "Comfort & Convenience",
+    desc: "Relax and enjoy the journey."
+  },
+  {
+    icon: UserCheck,
+    title: "Professional Service",
+    desc: "Experienced and courteous chauffeurs."
   },
   {
     icon: Clock,
-    title: "Meticulous Schedule Planning",
-    desc: "Dispatch plans routes well in advance, tracking regional traffic conditions and terminal flight gates to ensure punctual arrivals."
-  },
-  {
-    icon: Sparkles,
-    title: "Pristine Vehicle Sanitation",
-    desc: "Every vehicle in our fleet is cleaned and detailed before every trip, stocked with chilled bottled water and mobile charging stations."
+    title: "Dependable Transportation",
+    desc: "Always here when you need us."
   },
   {
     icon: Compass,
-    title: "Bespoke Personalized Itineraries",
-    desc: "Direct communication with our operations team allows for flexible multi-city stops, custom luggage accommodations, and tailored schedules."
+    title: "Personalized Travel",
+    desc: "Tailored to your specific needs."
   }
 ];
 
 const WhyChooseUs = () => {
   return (
-    <section className="py-20 md:py-28 bg-luxury-bg relative overflow-hidden">
+    <section className="py-20 md:py-24 bg-[#F7F5F0] text-[#141416] relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-          {/* Left Column: Heading and Image Composition */}
-          <div className="lg:col-span-5 space-y-6">
-            <div className="inline-flex items-center gap-2">
-              <span className="w-6 h-[1px] bg-luxury-gold/60 inline-block"></span>
-              <span className="text-xs uppercase tracking-[0.25em] font-semibold text-luxury-gold">
-                The Everest Standard
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+          {/* Left Column: Content & 4 Features */}
+          <div className="lg:col-span-6 space-y-8">
+            <div>
+              <span className="text-[10px] sm:text-xs uppercase tracking-[0.25em] font-semibold text-[#8C7449] block mb-2">
+                WHY CHOOSE EVEREST
               </span>
+
+              <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal tracking-tight text-[#141416] leading-[1.15] mb-4">
+                More Than a Ride —<br />
+                A Premium Experience
+              </h2>
+
+              <p className="text-xs sm:text-sm text-zinc-600 leading-relaxed font-normal max-w-lg">
+                We are committed to providing a superior travel experience with professional service, luxury vehicles, and a focus on your comfort.
+              </p>
             </div>
 
-            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal text-luxury-textPrimary leading-tight">
-              A Culture of Restraint, Polish & Precision.
-            </h2>
-
-            <p className="text-sm sm:text-base text-luxury-textSecondary leading-relaxed">
-              We do not view executive transportation as a mere ride from point A to point B. It is an extension of your professional reputation, personal peace of mind, and valuable time.
-            </p>
-
-            <div className="relative rounded-2xl overflow-hidden border border-luxury-border shadow-2xl pt-6">
-              <img
-                src="https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=1000&q=80"
-                alt="Executive chauffeur opening luxury sedan door"
-                className="w-full h-64 object-cover object-center filter brightness-95"
-                loading="lazy"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-luxury-bg via-transparent to-transparent" />
+            {/* 4 Feature Points in 2x2 Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
+              {benefits.map((item, idx) => {
+                const IconComponent = item.icon;
+                return (
+                  <div key={idx} className="flex items-start gap-3.5">
+                    <div className="w-10 h-10 rounded-full border border-[#C5A46D] flex items-center justify-center text-[#8C7449] shrink-0 bg-white/60 shadow-sm">
+                      <IconComponent className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-semibold text-[#141416] tracking-wide">
+                        {item.title}
+                      </h4>
+                      <p className="text-xs text-zinc-500 mt-0.5 leading-snug">
+                        {item.desc}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
-          {/* Right Column: 4 Pillars */}
-          <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {pillars.map((item, index) => {
-              const IconComp = item.icon;
-              return (
-                <div
-                  key={index}
-                  className="bg-luxury-surface border border-luxury-border p-6 rounded-2xl hover:border-luxury-gold/40 transition-all duration-300 shadow-luxury"
-                >
-                  <div className="w-12 h-12 rounded-xl bg-luxury-card border border-luxury-border flex items-center justify-center text-luxury-gold mb-5">
-                    <IconComp className="w-6 h-6" />
-                  </div>
-                  <h3 className="font-serif text-xl font-normal text-luxury-textPrimary mb-2">
-                    {item.title}
-                  </h3>
-                  <p className="text-xs sm:text-sm text-luxury-textSecondary leading-relaxed">
-                    {item.desc}
-                  </p>
-                </div>
-              );
-            })}
+          {/* Right Column: High-Res Passenger Interior Cabin Photography */}
+          <div className="lg:col-span-6 relative">
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-zinc-200">
+              <img
+                src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=1200&q=85"
+                alt="Executive passenger relaxing in luxury chauffeur cabin"
+                className="w-full h-[380px] sm:h-[460px] object-cover object-center filter brightness-95"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+            </div>
           </div>
         </div>
       </div>

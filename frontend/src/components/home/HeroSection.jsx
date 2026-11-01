@@ -1,25 +1,47 @@
 import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, ShieldCheck, Star, Award, Phone } from 'lucide-react';
-import Button from '../common/Button';
+import { ShieldCheck, Car, Plane, Building2, ArrowRight, PlusCircle } from 'lucide-react';
 import gsap from 'gsap';
+
+const trustItems = [
+  {
+    icon: ShieldCheck,
+    title: "Professional Chauffeurs",
+    desc: "Courteous and experienced"
+  },
+  {
+    icon: Car,
+    title: "Luxury Fleet",
+    desc: "Exceptional vehicles"
+  },
+  {
+    icon: Plane,
+    title: "Airport Transfers",
+    desc: "Reliable and stress-free"
+  },
+  {
+    icon: Building2,
+    title: "Business & Corporate",
+    desc: "Travel with confidence"
+  }
+];
 
 const HeroSection = () => {
   const heroRef = useRef(null);
-  const contentRef = useRef(null);
+  const textRef = useRef(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.fromTo(
-        contentRef.current?.querySelectorAll('.hero-anim'),
-        { opacity: 0, y: 30 },
+        textRef.current?.querySelectorAll('.hero-fade'),
+        { opacity: 0, y: 25 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.9,
-          stagger: 0.15,
+          duration: 0.8,
+          stagger: 0.12,
           ease: 'power3.out',
-          delay: 0.2
+          delay: 0.15
         }
       );
     }, heroRef);
@@ -28,81 +50,104 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <section ref={heroRef} className="relative min-h-[92vh] sm:min-h-screen flex items-center justify-center pt-24 pb-16 overflow-hidden">
-      {/* Background Photography with Luxury Vignette & Contrast Overlay */}
-      <div className="absolute inset-0 z-0">
+    <section
+      ref={heroRef}
+      className="relative min-h-screen flex flex-col justify-between pt-28 pb-8 overflow-hidden bg-luxury-bg text-white"
+    >
+      {/* Background Image: Jet + Luxury Vehicle on Tarmac */}
+      <div className="absolute inset-0 z-0 hidden md:block">
         <img
-          src="https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=2000&q=85"
-          alt="Everest Executive Limousine on quiet evening road"
-          className="w-full h-full object-cover object-center filter brightness-[0.42] contrast-[1.08] scale-105 transform animate-fade-in"
+          src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=2200&q=85"
+          alt="Everest Executive Private Jet & Chauffeur on Tarmac"
+          className="w-full h-full object-cover object-right-bottom filter brightness-[0.52] contrast-[1.12]"
           loading="eager"
         />
-        {/* Layered Luxury Gradient Overlays */}
-        <div className="absolute inset-0 bg-gradient-to-t from-luxury-bg via-luxury-bg/50 to-black/70" />
-        <div className="absolute inset-0 bg-gradient-to-r from-luxury-bg/90 via-luxury-bg/40 to-transparent" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_20%,rgba(11,11,12,0.85)_100%)]" />
+        {/* Gradients to blend smoothly and keep text readable on left */}
+        <div className="absolute inset-0 bg-gradient-to-r from-luxury-bg via-luxury-bg/60 to-transparent w-full md:w-[65%]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-luxury-bg via-transparent to-black/60" />
       </div>
 
-      {/* Content Container */}
-      <div ref={contentRef} className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-12 sm:pt-6">
-        <div className="max-w-3xl">
-          {/* Eyebrow Badge */}
-          <div className="hero-anim inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-luxury-surface/90 border border-luxury-gold/40 text-luxury-gold text-xs tracking-widest uppercase font-semibold mb-6 shadow-luxury backdrop-blur-md">
-            <span className="w-2 h-2 rounded-full bg-luxury-gold animate-pulse"></span>
-            <span>Executive Chauffeur & Limousine Service</span>
+      {/* Main Hero Content */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full my-auto">
+        <div ref={textRef} className="max-w-2xl text-center md:text-left mx-auto md:mx-0">
+          {/* Eyebrow */}
+          <div className="hero-fade inline-block mb-3">
+            <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.3em] text-luxury-gold">
+              PREMIUM CHAUFFEUR SERVICES
+            </span>
           </div>
 
-          {/* Headline */}
-          <h1 className="hero-anim font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-normal text-luxury-textPrimary tracking-tight leading-[1.1] mb-6">
-            Arrive in Comfort. <br />
-            <span className="text-gold-gradient italic font-normal">
-              Travel in Excellence.
-            </span>
+          {/* Heading */}
+          <h1 className="hero-fade font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-normal tracking-tight text-white leading-[1.1] mb-5">
+            Arrive in Comfort.<br />
+            Travel in <span className="italic text-luxury-gold font-serif">Excellence.</span>
           </h1>
 
-          {/* Supporting Copy */}
-          <p className="hero-anim text-base sm:text-lg md:text-xl text-luxury-textSecondary leading-relaxed font-normal mb-8 max-w-2xl">
-            Premium executive transportation and private chauffeur services designed around your comfort, discretion, and schedule across Pennsylvania, New York, New Jersey, and Washington D.C.
+          {/* Subtitle */}
+          <p className="hero-fade text-sm sm:text-base md:text-lg text-zinc-300 leading-relaxed max-w-xl mx-auto md:mx-0 mb-8 font-normal">
+            Executive transportation designed for your time, comfort, and peace of mind.
           </p>
 
-          {/* CTAs */}
-          <div className="hero-anim flex flex-col sm:flex-row items-stretch sm:items-center gap-4 mb-12">
-            <Link to="/quote">
-              <Button size="lg" variant="primary" className="w-full sm:w-auto tracking-wider uppercase text-xs font-bold shadow-luxury-gold">
-                Request a Ride <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
+          {/* Pill Action Buttons */}
+          <div className="hero-fade flex flex-row items-center justify-center md:justify-start gap-3 sm:gap-4 mb-8">
+            <Link
+              to="/quote"
+              className="inline-flex items-center justify-center gap-2 px-6 sm:px-7 py-3 sm:py-3.5 rounded-full bg-luxury-gold text-luxury-bg font-semibold text-xs sm:text-sm uppercase tracking-wider hover:bg-luxury-goldHover transition-all duration-200 shadow-luxury-gold active:scale-95"
+            >
+              <span>Request a Ride</span>
+              <ArrowRight className="w-4 h-4" />
             </Link>
 
-            <Link to="/fleet">
-              <Button size="lg" variant="secondary" className="w-full sm:w-auto tracking-wider uppercase text-xs">
-                Explore Our Fleet
-              </Button>
+            <Link
+              to="/fleet"
+              className="inline-flex items-center justify-center px-6 sm:px-7 py-3 sm:py-3.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white font-medium text-xs sm:text-sm tracking-wider transition-all duration-200 active:scale-95"
+            >
+              <span>Explore Our Fleet</span>
             </Link>
           </div>
+        </div>
 
-          {/* Verified Trust Strip */}
-          <div className="hero-anim grid grid-cols-2 sm:grid-cols-3 gap-4 pt-6 border-t border-luxury-border/60 text-xs text-luxury-textSecondary">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded-full bg-luxury-gold/15 flex items-center justify-center text-luxury-gold shrink-0">
-                <ShieldCheck className="w-3.5 h-3.5" />
-              </div>
-              <span>Professional Vetted Chauffeurs</span>
-            </div>
+        {/* Mobile Featured Image: Shown between text and trust indicators */}
+        <div className="md:hidden mt-4 mb-8 rounded-2xl overflow-hidden border border-luxury-border shadow-2xl relative">
+          <img
+            src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=1000&q=80"
+            alt="Private Jet and Executive Chauffeur"
+            className="w-full h-56 object-cover object-center filter brightness-[0.65]"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-luxury-bg via-transparent to-transparent" />
+        </div>
+      </div>
 
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded-full bg-luxury-gold/15 flex items-center justify-center text-luxury-gold shrink-0">
-                <Award className="w-3.5 h-3.5" />
-              </div>
-              <span>Immaculate Luxury Fleet</span>
-            </div>
-
-            <div className="col-span-2 sm:col-span-1 flex items-center gap-2">
-              <div className="w-6 h-6 rounded-full bg-luxury-gold/15 flex items-center justify-center text-luxury-gold shrink-0">
-                <Star className="w-3.5 h-3.5" />
-              </div>
-              <span>MDT, PHL, EWR, JFK & LGA</span>
-            </div>
+      {/* Hero Bottom Trust Bar & Scroll Indicator */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full mt-auto pt-6">
+        {/* Trust Strip */}
+        <div className="bg-black/50 backdrop-blur-md border border-white/10 rounded-2xl p-4 sm:p-6 shadow-2xl">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+            {trustItems.map((item, idx) => {
+              const IconComp = item.icon;
+              return (
+                <div key={idx} className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-luxury-gold/15 border border-luxury-gold/30 flex items-center justify-center text-luxury-gold shrink-0">
+                    <IconComp className="w-4 h-4" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-xs sm:text-sm font-semibold text-white tracking-wide truncate">
+                      {item.title}
+                    </div>
+                    <div className="text-[10px] sm:text-xs text-zinc-400 truncate">
+                      {item.desc}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
+        </div>
+
+        {/* Scroll to Explore Indicator */}
+        <div className="hidden sm:flex items-center justify-center gap-2 pt-4 text-[10px] uppercase tracking-[0.25em] text-zinc-400">
+          <PlusCircle className="w-3.5 h-3.5 text-luxury-gold" />
+          <span>SCROLL TO EXPLORE</span>
         </div>
       </div>
     </section>

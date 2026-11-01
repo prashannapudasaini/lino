@@ -53,3 +53,4 @@ def delete_airport(
         raise HTTPException(status_code=404, detail="Airport not found")
     db.delete(airport)
     db.commit()
+

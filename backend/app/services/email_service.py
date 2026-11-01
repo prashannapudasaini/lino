@@ -135,3 +135,4 @@ def send_business_notification_email(booking_data: dict) -> bool:
     
     logger.info(f"[DISPATCH NOTIFICATION] New enquiry {reference} by {customer_name} ({customer_email}, {customer_phone}) from {pickup} to {dropoff} on {date} at {time} [{service}]")
     return True
+

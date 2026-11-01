@@ -56,3 +56,4 @@ def delete_contact_message(
         raise HTTPException(status_code=404, detail="Message not found")
     db.delete(msg)
     db.commit()
+

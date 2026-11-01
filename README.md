@@ -190,3 +190,4 @@ The Admin Dashboard provides real-time operational control:
 ## 🛡️ Booking Enquiry Transparency
 
 Submitting a request through the website constitutes a formal **quotation enquiry**, not an automated credit card reservation. The customer receives an immediate confirmation with an assigned tracking reference (e.g. `EEL-2026-XXXXX`), explaining that our operations team is reviewing the route and calculating an all-inclusive quotation.
+
