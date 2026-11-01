@@ -48,6 +48,50 @@
   }
 }
 
+@keyframes shimmer {
+  0% {
+    transform: translateX(-180%) skewX(-15deg);
+  }
+  25%, 100% {
+    transform: translateX(300%) skewX(-15deg);
+  }
+}
+
+@keyframes kenburns {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.045) translate(-0.3%, -0.3%);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes subtle-glow {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 4.5s ease-in-out infinite;
+}
+
+.animate-kenburns {
+  animation: kenburns 18s ease-in-out infinite;
+}
+
+.animate-subtle-glow {
+  animation: subtle-glow 4s ease-in-out infinite;
+}
+
 @layer utilities {
   .text-gold-gradient {
     background: linear-gradient(135deg, #FFFFFF 0%, #C5A46D 50%, #D5B982 100%);
