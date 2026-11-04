@@ -1,5 +1,25 @@
 [
   {
+    "id": "email-1793770098286-877",
+    "type": "customer_confirmation",
+    "to": "abc@gmail.com",
+    "from": "\"Everest Executive Limo\" <concierge@everestlimo.com>",
+    "subject": "Your Quote Request [EEL-2026-41165] — Everest Executive Limo",
+    "reference_code": "EEL-2026-41165",
+    "timestamp": "2026-11-04T05:28:18.286Z",
+    "status": "sent"
+  },
+  {
+    "id": "email-1793770098282-161",
+    "type": "business_notification",
+    "to": "booking@everestlimo.com",
+    "from": "\"Everest Executive Limo Dispatch\" <dispatch@everestlimo.com>",
+    "subject": "[NEW REQUEST] EEL-2026-41165 — zczC (Airport Transportation)",
+    "reference_code": "EEL-2026-41165",
+    "timestamp": "2026-11-04T05:28:18.282Z",
+    "status": "sent"
+  },
+  {
     "id": "email-1793684459837-107",
     "type": "customer_confirmation",
     "to": "g.dupont@executive-advisors.com",

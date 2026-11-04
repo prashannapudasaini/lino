@@ -15,7 +15,8 @@ import ServiceAreasPage from './pages/ServiceAreasPage';
 import FleetPage from './pages/FleetPage';
 import QuotePage from './pages/QuotePage';
 import ContactPage from './pages/ContactPage';
-import PrivacyTermsPage from './pages/PrivacyTermsPage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
+import TermsPage from './pages/TermsPage';
 import NotFoundPage from './pages/NotFoundPage';
 
 // Admin Pages
@@ -81,12 +82,14 @@ function App() {
           <Route path="/service-areas" element={<ServiceAreasPage />} />
           <Route path="/fleet" element={<FleetPage />} />
           <Route path="/book-now" element={<QuotePage />} />
+          <Route path="/book" element={<QuotePage />} />
+          <Route path="/booking" element={<QuotePage />} />
           <Route path="/quote" element={<QuotePage />} />
           <Route path="/contact" element={<ContactPage />} />
-          <Route path="/privacy-policy" element={<PrivacyTermsPage defaultTab="privacy" />} />
-          <Route path="/privacy" element={<PrivacyTermsPage defaultTab="privacy" />} />
-          <Route path="/terms-and-conditions" element={<PrivacyTermsPage defaultTab="terms" />} />
-          <Route path="/terms" element={<PrivacyTermsPage defaultTab="terms" />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+          <Route path="/privacy" element={<PrivacyPolicyPage />} />
+          <Route path="/terms-and-conditions" element={<TermsPage />} />
+          <Route path="/terms" element={<TermsPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
 

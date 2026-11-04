@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { 
   Car, Calendar, Clock, MapPin, Users, Briefcase, 
   Plane, CheckCircle2, AlertCircle, ArrowRight, ArrowLeft, 
@@ -35,6 +36,7 @@ const VEHICLE_PREFERENCES = [
 ];
 
 const MultiStepBookingForm = ({ preselectedService = '', className = '' }) => {
+  const [searchParams] = useSearchParams();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -68,6 +70,24 @@ const MultiStepBookingForm = ({ preselectedService = '', className = '' }) => {
     phone: '',
     customer_notes: '',
   });
+
+  // Support preselection from URL parameters
+  useEffect(() => {
+    const urlService = searchParams.get('service');
+    const urlVehicle = searchParams.get('vehicle');
+    const urlAirport = searchParams.get('airport');
+
+    if (urlService || urlVehicle || urlAirport) {
+      setFormData(prev => ({
+        ...prev,
+        service_type: urlAirport ? 'Airport Transportation' : (urlService || prev.service_type),
+        vehicle_preference: urlVehicle 
+          ? (VEHICLE_PREFERENCES.find(v => v.toLowerCase().includes(urlVehicle.toLowerCase())) || urlVehicle)
+          : prev.vehicle_preference,
+        airport_code: urlAirport || prev.airport_code
+      }));
+    }
+  }, [searchParams]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Users, Briefcase, Check, ArrowRight, ShieldCheck, Wifi, Sparkles } from 'lucide-react';
+import { Users, Briefcase, Check, ArrowRight, ShieldCheck, Wifi, Sparkles, Car } from 'lucide-react';
 import PageHero from '../components/common/PageHero';
 
 const fleetData = [
@@ -12,7 +12,6 @@ const fleetData = [
     passengers: 3,
     luggage: 3,
     image: "/images/custom/fleet-sedan.jpg",
-    interiorImage: "/images/custom/why-passenger.jpg",
     description: "The gold standard of executive mobility. Engineered for corporate executives, solo travelers, and couples who require acoustic quietness, handcrafted leather seating, and seamless mobile connectivity for work or rest.",
     features: [
       "Acoustic noise-insulated double glazing",
@@ -31,7 +30,6 @@ const fleetData = [
     passengers: 6,
     luggage: 6,
     image: "/images/custom/fleet-suv.jpg",
-    interiorImage: "/images/custom/service-events.jpg",
     description: "Commanding road authority and opulent first-class comfort. Boasting an extended wheelbase for massive luggage capacity, captain recliners, and panoramic visibility for corporate delegations and airport transfers.",
     features: [
       "Extended wheelbase with maximum luggage capacity",
@@ -44,13 +42,12 @@ const fleetData = [
   },
   {
     id: "sprinter",
-    name: "Mercedes Executive Sprinter",
-    subtitle: "Custom Executive Jet-Class Cabin",
+    name: "Executive Jet Sprinter",
+    subtitle: "Custom Executive Jet-Class Cabin (Up to 14 Passengers)",
     category: "Executive Van",
     passengers: 14,
     luggage: 12,
     image: "/images/custom/service-chauffeur.jpg",
-    interiorImage: "/images/custom/why-passenger.jpg",
     description: "A private jet cabin on wheels. Tailored for corporate board roadshows, executive delegations, and discerning group itineraries requiring full standing height, worktables, and unmatched luxury.",
     features: [
       "Full 6'4\" standing headroom cabin",
@@ -64,12 +61,11 @@ const fleetData = [
   {
     id: "limo",
     name: "Executive Stretch Limousine",
-    subtitle: "Lincoln Presidential Stretch",
+    subtitle: "Lincoln Presidential Stretch (Up to 8-10 Passengers)",
     category: "Limousine",
-    passengers: 8,
+    passengers: 10,
     luggage: 6,
     image: "/images/custom/hero-jet-limo.jpg",
-    interiorImage: "/images/custom/service-events.jpg",
     description: "Timeless elegance and celebratory prestige. Tailored for milestone galas, black-tie celebrations, weddings, and high-profile VIP arrivals where an unforgettable entrance is paramount.",
     features: [
       "Custom J-lounge seating in fine stitched leather",
@@ -90,7 +86,7 @@ const FleetPage = () => {
     : fleetData.filter(v => v.category.toLowerCase().includes(activeFilter.toLowerCase()));
 
   return (
-    <div className="bg-luxury-bg text-white">
+    <div className="bg-[#0B0B0C] text-white">
       {/* Hero */}
       <PageHero
         eyebrow="OUR FLEET"
@@ -103,9 +99,9 @@ const FleetPage = () => {
       {/* Fleet Introduction & Filter */}
       <section className="py-16 md:py-20 bg-[#0B0B0C]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-12 border-b border-luxury-border">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-12 border-b border-[#242428]">
             <div className="max-w-xl">
-              <span className="text-[11px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-luxury-gold block mb-2">
+              <span className="text-[11px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#C5A46D] block mb-2">
                 LUXURY AUTOMOTIVE SHOWCASE
               </span>
               <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal text-white tracking-tight">
@@ -121,8 +117,8 @@ const FleetPage = () => {
                   onClick={() => setActiveFilter(cat)}
                   className={`px-5 py-2.5 rounded-full text-xs font-semibold tracking-wider uppercase transition-all focus:outline-none ${
                     activeFilter === cat
-                      ? 'bg-luxury-gold text-luxury-bg shadow-luxury-gold'
-                      : 'bg-luxury-surface text-zinc-400 hover:text-white border border-luxury-border'
+                      ? 'bg-[#C5A46D] text-[#0B0B0C] shadow-luxury-gold'
+                      : 'bg-[#151517] text-zinc-400 hover:text-white border border-[#242428]'
                   }`}
                 >
                   {cat}
@@ -134,15 +130,15 @@ const FleetPage = () => {
       </section>
 
       {/* Detailed Editorial Vehicle Showcases */}
-      <div className="py-12 md:py-20 space-y-24 md:space-y-32">
+      <div className="py-12 md:py-20 space-y-20 md:space-y-28">
         {filteredFleet.map((vehicle, index) => {
           const isEven = index % 2 === 0;
           return (
             <section key={vehicle.id} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="bg-luxury-card border border-luxury-border rounded-3xl overflow-hidden shadow-2xl">
+              <div className="bg-[#151517] border border-[#242428] rounded-3xl overflow-hidden shadow-2xl hover:border-[#C5A46D]/40 transition-colors">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 items-stretch">
                   {/* Vehicle Hero Photography */}
-                  <div className={`lg:col-span-7 relative min-h-[380px] sm:min-h-[460px] ${isEven ? 'order-1' : 'order-1 lg:order-2'}`}>
+                  <div className={`lg:col-span-7 relative min-h-[360px] sm:min-h-[460px] ${isEven ? 'order-1' : 'order-1 lg:order-2'}`}>
                     <img
                       src={vehicle.image}
                       alt={vehicle.name}
@@ -151,7 +147,7 @@ const FleetPage = () => {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent lg:hidden" />
                     <div className="absolute top-6 left-6">
-                      <span className="px-3.5 py-1.5 rounded-full bg-black/75 backdrop-blur-md border border-white/10 text-[10px] uppercase tracking-wider font-semibold text-luxury-gold">
+                      <span className="px-3.5 py-1.5 rounded-full bg-black/80 backdrop-blur-md border border-[#C5A46D]/40 text-[10px] uppercase tracking-wider font-semibold text-[#C5A46D]">
                         {vehicle.category}
                       </span>
                     </div>
@@ -164,7 +160,7 @@ const FleetPage = () => {
                         <h3 className="font-serif text-2xl sm:text-3xl md:text-4xl font-normal text-white">
                           {vehicle.name}
                         </h3>
-                        <p className="text-xs text-luxury-gold font-medium mt-1">
+                        <p className="text-xs text-[#C5A46D] font-medium mt-1">
                           {vehicle.subtitle}
                         </p>
                       </div>
@@ -176,24 +172,24 @@ const FleetPage = () => {
                       {/* Passenger & Luggage Specs */}
                       <div className="flex items-center gap-6 py-4 border-y border-white/10 text-xs text-zinc-300">
                         <div className="flex items-center gap-2">
-                          <Users className="w-4 h-4 text-luxury-gold" />
+                          <Users className="w-4 h-4 text-[#C5A46D]" />
                           <span><strong>{vehicle.passengers}</strong> Passengers</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Briefcase className="w-4 h-4 text-luxury-gold" />
+                          <Briefcase className="w-4 h-4 text-[#C5A46D]" />
                           <span><strong>{vehicle.luggage}</strong> Luggage</span>
                         </div>
                       </div>
 
                       {/* Interior Features */}
                       <div className="space-y-2">
-                        <h4 className="text-[11px] uppercase tracking-wider font-semibold text-luxury-gold">
+                        <h4 className="text-[11px] uppercase tracking-wider font-semibold text-[#C5A46D]">
                           In-Cabin Amenities:
                         </h4>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-zinc-300">
                           {vehicle.features.map((feat, fIdx) => (
                             <div key={fIdx} className="flex items-start gap-2">
-                              <Check className="w-3.5 h-3.5 text-luxury-gold shrink-0 mt-0.5" />
+                              <Check className="w-3.5 h-3.5 text-[#C5A46D] shrink-0 mt-0.5" />
                               <span className="leading-tight">{feat}</span>
                             </div>
                           ))}
@@ -201,11 +197,11 @@ const FleetPage = () => {
                       </div>
                     </div>
 
-                    {/* CTA */}
+                    {/* Preselected Booking CTA */}
                     <div className="pt-8">
                       <Link
-                        to="/book-now"
-                        className="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-7 py-3.5 rounded-full bg-luxury-gold text-luxury-bg font-semibold text-xs uppercase tracking-wider hover:bg-luxury-goldHover transition-all shadow-luxury-gold"
+                        to={`/book-now?vehicle=${encodeURIComponent(vehicle.name)}`}
+                        className="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-7 py-3.5 rounded-full bg-[#C5A46D] text-[#0B0B0C] font-semibold text-xs uppercase tracking-wider hover:bg-[#D5B982] transition-all shadow-luxury-gold hover:shadow-luxury-glow"
                       >
                         <span>Request This Vehicle</span>
                         <ArrowRight className="w-3.5 h-3.5" />
@@ -220,7 +216,7 @@ const FleetPage = () => {
       </div>
 
       {/* Bottom CTA */}
-      <section className="py-20 md:py-28 bg-[#0B0B0C] border-t border-luxury-border text-center">
+      <section className="py-20 md:py-28 bg-[#151517] border-t border-[#242428] text-center">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal text-white mb-4 tracking-tight">
             Have a Specific Vehicle Requirement?
@@ -230,7 +226,7 @@ const FleetPage = () => {
           </p>
           <Link
             to="/book-now"
-            className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-luxury-gold text-luxury-bg font-semibold text-xs sm:text-sm uppercase tracking-wider hover:bg-luxury-goldHover transition-all shadow-luxury-gold hover:shadow-luxury-glow"
+            className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-[#C5A46D] text-[#0B0B0C] font-semibold text-xs sm:text-sm uppercase tracking-wider hover:bg-[#D5B982] transition-all shadow-luxury-gold hover:shadow-luxury-glow"
           >
             <span>Book Your Ride</span>
             <ArrowRight className="w-4 h-4" />
