@@ -4,13 +4,21 @@ const Badge = ({ children, variant = 'default', size = 'sm', className = '' }) =
   const variants = {
     default: "bg-luxury-elevated text-luxury-textSecondary border-luxury-border",
     gold: "bg-luxury-gold/15 text-luxury-gold border-luxury-gold/30",
-    new: "bg-blue-950/40 text-blue-300 border-blue-800/40",
-    reviewing: "bg-amber-950/40 text-amber-300 border-amber-800/40",
-    quote_sent: "bg-purple-950/40 text-purple-300 border-purple-800/40",
-    confirmed: "bg-emerald-950/40 text-emerald-300 border-emerald-800/40",
-    completed: "bg-teal-950/40 text-teal-300 border-teal-800/40",
-    cancelled: "bg-zinc-800/50 text-zinc-400 border-zinc-700/50",
-    rejected: "bg-red-950/40 text-red-300 border-red-800/40",
+    
+    // 7 Standard Booking & Quote Request Statuses
+    new_request: "bg-blue-950/50 text-blue-300 border-blue-700/50",
+    under_review: "bg-amber-950/50 text-amber-300 border-amber-700/50",
+    quote_sent: "bg-purple-950/50 text-purple-300 border-purple-700/50",
+    awaiting_customer_response: "bg-sky-950/50 text-sky-300 border-sky-700/50",
+    confirmed: "bg-emerald-950/50 text-emerald-300 border-emerald-700/50",
+    completed: "bg-teal-950/50 text-teal-300 border-teal-700/50",
+    cancelled: "bg-zinc-800/60 text-zinc-400 border-zinc-700/50",
+
+    // Aliases & fallback matches
+    new: "bg-blue-950/50 text-blue-300 border-blue-700/50",
+    reviewing: "bg-amber-950/50 text-amber-300 border-amber-700/50",
+    pending: "bg-amber-950/50 text-amber-300 border-amber-700/50",
+    rejected: "bg-red-950/50 text-red-300 border-red-800/50",
   };
 
   const sizes = {
@@ -20,7 +28,8 @@ const Badge = ({ children, variant = 'default', size = 'sm', className = '' }) =
   };
 
   // Map backend status strings cleanly
-  const normalizedKey = variant.toLowerCase().replace(/\s+/g, '_');
+  const rawKey = String(variant || children || '').toLowerCase().trim();
+  const normalizedKey = rawKey.replace(/[^a-z0-9]/g, '_');
   const selectedVariant = variants[normalizedKey] || variants.default;
 
   return (
@@ -31,4 +40,3 @@ const Badge = ({ children, variant = 'default', size = 'sm', className = '' }) =
 };
 
 export default Badge;
-

@@ -42,38 +42,47 @@ const getStoredBookings = () => {
       {
         id: 1,
         reference_code: 'EEL-2026-8812',
-        first_name: 'Jonathan',
-        last_name: 'Vance',
+        full_name: 'Jonathan Vance',
         email: 'j.vance@executivecapital.com',
         phone: '+1 (717) 555-8910',
         service_type: 'Airport Transportation',
-        vehicle_name: 'Executive Luxury Sedan',
-        pickup_address: '100 Senate Ave, Camp Hill, PA',
-        dropoff_address: 'Philadelphia International Airport (PHL) Terminal A',
-        pickup_datetime: '2026-11-12T06:30:00',
+        vehicle_preference: 'Executive Luxury Sedan (Up to 3 Passengers)',
+        pickup_location: '100 Senate Ave, Camp Hill, PA',
+        dropoff_location: 'Philadelphia International Airport (PHL) Terminal A',
+        pickup_date: '2026-11-12',
+        pickup_time: '06:30',
+        trip_type: 'one_way',
         passengers: 2,
-        luggage_count: 3,
+        luggage: 3,
+        airport_code: 'PHL',
+        flight_type: 'departure',
+        airline: 'American Airlines',
         flight_number: 'AA 2108',
-        estimated_price: 295.0,
-        status: 'confirmed',
+        estimated_quote: 295.0,
+        status: 'Confirmed',
+        internal_notes: 'VIP client, flight departing 09:15 AM from PHL Terminal A.',
         created_at: new Date(Date.now() - 3600000 * 24).toISOString()
       },
       {
         id: 2,
         reference_code: 'EEL-2026-9240',
-        first_name: 'Victoria',
-        last_name: 'Sterling',
+        full_name: 'Victoria Sterling',
         email: 'v.sterling@apexventures.org',
         phone: '+1 (212) 555-0144',
-        service_type: 'Corporate Transportation',
-        vehicle_name: 'Executive Luxury SUV',
-        pickup_address: 'Penn State Health Medical Center, Hershey, PA',
-        dropoff_address: 'Manhattan Midtown Financial District, New York, NY',
-        pickup_datetime: '2026-11-15T08:00:00',
+        service_type: 'Corporate & Executive Travel',
+        vehicle_preference: 'Executive Luxury SUV (Up to 6 Passengers)',
+        pickup_location: 'Penn State Health Medical Center, Hershey, PA',
+        dropoff_location: 'Manhattan Midtown Financial District, New York, NY',
+        pickup_date: '2026-11-15',
+        pickup_time: '08:00',
+        trip_type: 'round_trip',
+        return_date: '2026-11-16',
+        return_time: '17:00',
         passengers: 4,
-        luggage_count: 4,
-        estimated_price: 595.0,
-        status: 'pending',
+        luggage: 4,
+        estimated_quote: 850.0,
+        status: 'Under Review',
+        internal_notes: 'Board meeting roadshow with 4 executive directors.',
         created_at: new Date(Date.now() - 3600000 * 6).toISOString()
       }
     ];
@@ -97,7 +106,7 @@ export const loginAdmin = async (email, password) => {
     return response.data;
   } catch (err) {
     // Client Demo fallback if backend is offline on Vercel preview
-    if (email === 'admin@everestlimo.com' && password === 'EverestAdmin2026!') {
+    if (email === 'admin@everestlimo.com' && (password === 'EverestAdmin2026!' || password === 'EverestLimo2026!')) {
       return {
         access_token: 'demo-preview-jwt-token-everest-limo',
         token_type: 'bearer',
@@ -138,12 +147,12 @@ export const createBooking = async (bookingData) => {
     return response.data;
   } catch (err) {
     // Graceful fallback for client review mode so the booking form works 100% reliably
-    console.info('Operating in client preview mode: generating instant confirmed quotation.');
-    const code = `EEL-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
+    console.info('Operating in client preview mode: generating instant quote request.');
+    const code = `EEL-2026-${Math.floor(10000 + Math.random() * 90000)}`;
     const newBooking = {
       id: Date.now(),
       reference_code: code,
-      status: 'pending',
+      status: 'New Request',
       ...bookingData,
       created_at: new Date().toISOString()
     };
@@ -158,7 +167,25 @@ export const getBookings = async (params = {}) => {
     const response = await api.get('/bookings', { params });
     return response.data;
   } catch {
-    return getStoredBookings();
+    let list = getStoredBookings();
+    if (params.status && params.status !== 'All') {
+      list = list.filter(b => (b.status || '').toLowerCase() === params.status.toLowerCase());
+    }
+    if (params.date) {
+      list = list.filter(b => b.pickup_date === params.date);
+    }
+    if (params.search) {
+      const q = params.search.toLowerCase();
+      list = list.filter(b =>
+        (b.reference_code && b.reference_code.toLowerCase().includes(q)) ||
+        (b.full_name && b.full_name.toLowerCase().includes(q)) ||
+        (b.email && b.email.toLowerCase().includes(q)) ||
+        (b.phone && b.phone.toLowerCase().includes(q)) ||
+        (b.pickup_location && b.pickup_location.toLowerCase().includes(q)) ||
+        (b.dropoff_location && b.dropoff_location.toLowerCase().includes(q))
+      );
+    }
+    return list;
   }
 };
 
@@ -168,7 +195,7 @@ export const getBooking = async (id) => {
     return response.data;
   } catch {
     const list = getStoredBookings();
-    return list.find((b) => String(b.id) === String(id)) || list[0];
+    return list.find((b) => String(b.id) === String(id) || b.reference_code === id) || list[0];
   }
 };
 
@@ -178,10 +205,10 @@ export const updateBookingStatus = async (id, statusData) => {
     return response.data;
   } catch {
     const list = getStoredBookings().map((b) =>
-      String(b.id) === String(id) ? { ...b, ...statusData } : b
+      String(b.id) === String(id) || b.reference_code === id ? { ...b, ...statusData } : b
     );
     saveStoredBookings(list);
-    return list.find((b) => String(b.id) === String(id));
+    return list.find((b) => String(b.id) === String(id) || b.reference_code === id);
   }
 };
 
@@ -190,7 +217,7 @@ export const deleteBooking = async (id) => {
     const response = await api.delete(`/bookings/${id}`);
     return response.data;
   } catch {
-    const list = getStoredBookings().filter((b) => String(b.id) !== String(id));
+    const list = getStoredBookings().filter((b) => String(b.id) !== String(id) && b.reference_code !== id);
     saveStoredBookings(list);
     return { success: true };
   }
@@ -356,8 +383,8 @@ export const getDashboardStats = async () => {
     const bookings = getStoredBookings();
     return {
       total_bookings: bookings.length + 124,
-      pending_quotes: bookings.filter((b) => b.status === 'pending').length + 3,
-      confirmed_rides: bookings.filter((b) => b.status === 'confirmed').length + 118,
+      pending_quotes: bookings.filter((b) => b.status === 'New Request' || b.status === 'Under Review').length + 3,
+      confirmed_rides: bookings.filter((b) => b.status === 'Confirmed').length + 118,
       active_fleet_count: 8,
       unread_messages: 2
     };

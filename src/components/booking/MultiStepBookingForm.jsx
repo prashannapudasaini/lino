@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { 
   Car, Calendar, Clock, MapPin, Users, Briefcase, 
   Plane, CheckCircle2, AlertCircle, ArrowRight, ArrowLeft, 
-  ShieldCheck, Copy, Check
+  ShieldCheck, Copy, Check, Edit3, HelpCircle, Info
 } from 'lucide-react';
 import Button from '../common/Button';
+import GoogleAddressAutocomplete from './GoogleAddressAutocomplete';
 import { createBooking } from '../../services/api';
 
 const SERVICE_TYPES = [
@@ -20,6 +21,8 @@ const AIRPORTS = [
   { code: "EWR", name: "Newark Liberty International Airport (EWR)" },
   { code: "JFK", name: "John F. Kennedy International Airport (JFK)" },
   { code: "LGA", name: "LaGuardia Airport (LGA)" },
+  { code: "BWI", name: "Baltimore/Washington International (BWI)" },
+  { code: "IAD", name: "Washington Dulles International (IAD)" },
   { code: "OTHER", name: "Other Regional / Private FBO Airport" }
 ];
 
@@ -52,14 +55,17 @@ const MultiStepBookingForm = ({ preselectedService = '', className = '' }) => {
     luggage: 1,
     vehicle_preference: 'Executive Luxury Sedan (Up to 3 Passengers)',
     special_requests: '',
+    // Airport & Flight Information
     airport_code: 'MDT',
     flight_type: 'arrival',
     airline: '',
     flight_number: '',
+    flight_date: '',
+    flight_time: '',
+    // Customer Contact Details
     full_name: '',
     email: '',
     phone: '',
-    country_code: '+1',
     customer_notes: '',
   });
 
@@ -69,13 +75,19 @@ const MultiStepBookingForm = ({ preselectedService = '', className = '' }) => {
     if (error) setError(null);
   };
 
+  const handleAddressChange = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    if (error) setError(null);
+  };
+
+  // Field Validations
   const validateStep1 = () => {
     if (!formData.pickup_location.trim()) {
-      setError("Please provide a pickup location or address.");
+      setError("Please provide a valid pickup location or street address.");
       return false;
     }
     if (!formData.dropoff_location.trim()) {
-      setError("Please provide a destination location or address.");
+      setError("Please provide a destination or drop-off location.");
       return false;
     }
     if (!formData.pickup_date) {
@@ -86,11 +98,22 @@ const MultiStepBookingForm = ({ preselectedService = '', className = '' }) => {
       setError("Please select your requested pickup time.");
       return false;
     }
+    if (formData.trip_type === 'round_trip' && (!formData.return_date || !formData.return_time)) {
+      setError("Please provide return date and time for round-trip reservation.");
+      return false;
+    }
+    return true;
+  };
+
+  const validateStep2 = () => {
+    if (formData.passengers < 1) {
+      setError("Please specify at least 1 passenger.");
+      return false;
+    }
     return true;
   };
 
   const validateStep3 = () => {
-    // If airport transportation is selected, validate flight info
     if (formData.service_type === "Airport Transportation") {
       if (!formData.airport_code) {
         setError("Please select the airport for your transfer.");
@@ -105,16 +128,21 @@ const MultiStepBookingForm = ({ preselectedService = '', className = '' }) => {
       setError("Please enter your full name.");
       return false;
     }
-    if (!formData.email.trim() || !formData.email.includes('@')) {
-      setError("Please enter a valid email address for your quote.");
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.email.trim() || !emailRegex.test(formData.email.trim())) {
+      setError("Please enter a valid email address to receive your quotation.");
       return false;
     }
-    if (!formData.phone.trim()) {
-      setError("Please provide a contact phone number.");
+    const cleanPhone = formData.phone.replace(/[^0-9+]/g, '');
+    if (!cleanPhone || cleanPhone.length < 7) {
+      setError("Please enter a valid contact phone number.");
       return false;
     }
     return true;
   };
+
+  const isAirportService = formData.service_type === "Airport Transportation";
+  const totalSteps = isAirportService ? 5 : 4;
 
   const handleNext = () => {
     setError(null);
@@ -122,8 +150,8 @@ const MultiStepBookingForm = ({ preselectedService = '', className = '' }) => {
       if (!validateStep1()) return;
       setStep(2);
     } else if (step === 2) {
-      // If Airport Transportation, go to Step 3; otherwise go straight to Step 4 (contact)
-      if (formData.service_type === "Airport Transportation") {
+      if (!validateStep2()) return;
+      if (isAirportService) {
         setStep(3);
       } else {
         setStep(4);
@@ -133,7 +161,7 @@ const MultiStepBookingForm = ({ preselectedService = '', className = '' }) => {
       setStep(4);
     } else if (step === 4) {
       if (!validateStep4()) return;
-      setStep(5);
+      setStep(5); // Review Step
     }
   };
 
@@ -142,7 +170,7 @@ const MultiStepBookingForm = ({ preselectedService = '', className = '' }) => {
     if (step === 5) {
       setStep(4);
     } else if (step === 4) {
-      if (formData.service_type === "Airport Transportation") {
+      if (isAirportService) {
         setStep(3);
       } else {
         setStep(2);
@@ -155,7 +183,7 @@ const MultiStepBookingForm = ({ preselectedService = '', className = '' }) => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     setError(null);
     setLoading(true);
 
@@ -165,7 +193,7 @@ const MultiStepBookingForm = ({ preselectedService = '', className = '' }) => {
     } catch (err) {
       console.error("Booking submission error:", err);
       const detail = err.response?.data?.detail;
-      setError(typeof detail === 'string' ? detail : "Unable to submit your request at this time. Please check your network or call dispatch directly at +1 (717) 555-0199.");
+      setError(typeof detail === 'string' ? detail : "Unable to submit your quote request at this time. Please check your connection or contact our 24/7 dispatch at +1 (717) 555-0199.");
     } finally {
       setLoading(false);
     }
@@ -179,7 +207,7 @@ const MultiStepBookingForm = ({ preselectedService = '', className = '' }) => {
     }
   };
 
-  // SUCCESS CONFIRMATION VIEW
+  // ================= SUCCESS SCREEN =================
   if (submittedBooking) {
     return (
       <div className={`bg-luxury-surface border border-luxury-gold/40 rounded-2xl p-6 sm:p-10 shadow-2xl max-w-2xl mx-auto text-center ${className}`}>
@@ -187,23 +215,34 @@ const MultiStepBookingForm = ({ preselectedService = '', className = '' }) => {
           <CheckCircle2 className="w-8 h-8" />
         </div>
 
-        <span className="text-xs uppercase tracking-[0.25em] font-semibold text-luxury-gold block mb-2">
-          Request Received Successfully
+        <span className="text-[11px] uppercase tracking-[0.25em] font-semibold text-luxury-gold block mb-2">
+          Request Acknowledged
         </span>
 
-        <h3 className="font-serif text-3xl font-normal text-luxury-textPrimary mb-3">
-          Your Executive Quote Request is Under Review
+        {/* Exact required heading and success message */}
+        <h3 className="font-serif text-2xl sm:text-3xl font-normal text-luxury-textPrimary mb-4">
+          Your ride request has been successfully submitted!
         </h3>
 
-        <p className="text-sm text-luxury-textSecondary leading-relaxed mb-6">
-          Thank you, <strong className="text-luxury-textPrimary">{submittedBooking.full_name}</strong>. Our executive dispatch team has received your itinerary and is calculating your personalized, all-inclusive quote. An acknowledgment email has been delivered to <strong className="text-luxury-textPrimary">{submittedBooking.email}</strong>.
+        <p className="text-sm sm:text-base text-luxury-textSecondary leading-relaxed mb-6 max-w-xl mx-auto">
+          Thank you for choosing <strong className="text-luxury-textPrimary">Everest Executive Limo</strong>. Our team has received your request and will contact you shortly with your personalized quotation.
         </p>
+
+        {/* Clear Explanation that this is a request, not a confirmed reservation */}
+        <div className="bg-amber-950/25 border border-amber-500/30 rounded-xl p-3.5 sm:p-4 mb-6 text-left max-w-lg mx-auto">
+          <div className="flex items-start gap-2.5">
+            <Info className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+            <p className="text-xs text-amber-200/90 leading-relaxed">
+              <strong>Notice:</strong> This is a reservation enquiry and quotation request. Your ride is not confirmed until our dispatch team verifies vehicle availability and you accept your customized quote. No charges have been made.
+            </p>
+          </div>
+        </div>
 
         {/* Reference Code Card */}
         <div className="bg-luxury-card border border-luxury-border rounded-xl p-4 sm:p-5 mb-8 max-w-md mx-auto flex items-center justify-between">
           <div className="text-left">
             <span className="text-[10px] uppercase tracking-wider text-luxury-textMuted block">
-              Reference Code
+              Request Reference Number
             </span>
             <span className="font-mono text-lg font-bold text-luxury-gold tracking-wider">
               {submittedBooking.reference_code}
@@ -211,6 +250,7 @@ const MultiStepBookingForm = ({ preselectedService = '', className = '' }) => {
           </div>
           <button
             onClick={handleCopyCode}
+            type="button"
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-luxury-elevated border border-luxury-border text-xs text-luxury-textSecondary hover:text-luxury-gold transition-colors"
           >
             {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
@@ -223,19 +263,19 @@ const MultiStepBookingForm = ({ preselectedService = '', className = '' }) => {
           <div className="flex items-start gap-2.5">
             <span className="w-5 h-5 rounded-full bg-luxury-gold/15 text-luxury-gold flex items-center justify-center font-bold shrink-0 text-[11px]">1</span>
             <p className="text-luxury-textSecondary">
-              <strong className="text-luxury-textPrimary">Dispatch Itinerary Review:</strong> We verify route timing, requested vehicle class, and airport coordination.
+              <strong className="text-luxury-textPrimary">Dispatch Route Review:</strong> We verify route timing, requested vehicle class, and airport coordination.
             </p>
           </div>
           <div className="flex items-start gap-2.5">
             <span className="w-5 h-5 rounded-full bg-luxury-gold/15 text-luxury-gold flex items-center justify-center font-bold shrink-0 text-[11px]">2</span>
             <p className="text-luxury-textSecondary">
-              <strong className="text-luxury-textPrimary">Custom Quotation Delivery:</strong> You will receive a direct quote with final pricing and chauffeur details.
+              <strong className="text-luxury-textPrimary">Personalized Quotation:</strong> You will receive an all-inclusive quote via email at <strong className="text-luxury-textPrimary">{submittedBooking.email}</strong>.
             </p>
           </div>
           <div className="flex items-start gap-2.5">
             <span className="w-5 h-5 rounded-full bg-luxury-gold/15 text-luxury-gold flex items-center justify-center font-bold shrink-0 text-[11px]">3</span>
             <p className="text-luxury-textSecondary">
-              <strong className="text-luxury-textPrimary">Reservation Confirmation:</strong> Your journey is officially locked in once you review and accept the quotation.
+              <strong className="text-luxury-textPrimary">Booking Confirmation:</strong> Your reservation is locked in once you approve the quotation details.
             </p>
           </div>
         </div>
@@ -260,19 +300,20 @@ const MultiStepBookingForm = ({ preselectedService = '', className = '' }) => {
     );
   }
 
+  // ================= MAIN MULTI-STEP FORM =================
   return (
     <div className={`bg-luxury-surface/95 border border-luxury-border rounded-2xl p-6 sm:p-8 md:p-10 shadow-2xl backdrop-blur-xl ${className}`}>
       {/* Progress Indicators */}
       <div className="mb-8">
         <div className="flex items-center justify-between text-xs text-luxury-textSecondary mb-3">
           <span className="uppercase tracking-widest font-semibold text-luxury-gold">
-            Step {step} of {formData.service_type === "Airport Transportation" ? 5 : 4}
+            Step {step} of {totalSteps}
           </span>
           <span className="text-luxury-textMuted">
             {step === 1 && "Journey Details"}
-            {step === 2 && "Vehicle & Passengers"}
-            {step === 3 && "Airport Details"}
-            {step === 4 && "Contact & Details"}
+            {step === 2 && "Passenger & Vehicle"}
+            {step === 3 && (isAirportService ? "Airport & Flight Details" : "Passenger & Vehicle")}
+            {step === 4 && "Customer Information"}
             {step === 5 && "Review & Submit"}
           </span>
         </div>
@@ -280,7 +321,7 @@ const MultiStepBookingForm = ({ preselectedService = '', className = '' }) => {
           <div 
             className="h-full bg-gradient-to-r from-luxury-gold to-luxury-goldHover transition-all duration-300 rounded-full"
             style={{ 
-              width: `${(step / (formData.service_type === "Airport Transportation" ? 5 : 4)) * 100}%` 
+              width: `${(step / totalSteps) * 100}%` 
             }}
           />
         </div>
@@ -297,12 +338,14 @@ const MultiStepBookingForm = ({ preselectedService = '', className = '' }) => {
         {/* ================= STEP 1: JOURNEY DETAILS ================= */}
         {step === 1 && (
           <div className="space-y-5 animate-fade-in">
-            <h3 className="font-serif text-xl sm:text-2xl text-luxury-textPrimary mb-1">
-              Select Service & Itinerary
-            </h3>
-            <p className="text-xs text-luxury-textSecondary mb-4">
-              Enter your pickup and destination locations across PA, NY, NJ, or DC.
-            </p>
+            <div>
+              <h3 className="font-serif text-xl sm:text-2xl text-luxury-textPrimary mb-1">
+                Journey & Route Details
+              </h3>
+              <p className="text-xs text-luxury-textSecondary">
+                Enter your pickup and destination locations. We service Central PA, Philadelphia, New York, New Jersey, and Washington D.C.
+              </p>
+            </div>
 
             <div>
               <label className="block text-xs uppercase tracking-wider font-medium text-luxury-textSecondary mb-2">
@@ -322,98 +365,86 @@ const MultiStepBookingForm = ({ preselectedService = '', className = '' }) => {
               </select>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs uppercase tracking-wider font-medium text-luxury-textSecondary mb-2">
-                  Trip Type
-                </label>
-                <div className="grid grid-cols-2 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setFormData(p => ({ ...p, trip_type: 'one_way' }))}
-                    className={`py-2.5 px-3 rounded-xl text-xs font-medium border transition-colors min-h-[44px] ${
-                      formData.trip_type === 'one_way'
-                        ? 'bg-luxury-gold/15 border-luxury-gold text-luxury-gold font-semibold'
-                        : 'bg-luxury-card border-luxury-border text-luxury-textSecondary'
-                    }`}
-                  >
-                    One-Way
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setFormData(p => ({ ...p, trip_type: 'round_trip' }))}
-                    className={`py-2.5 px-3 rounded-xl text-xs font-medium border transition-colors min-h-[44px] ${
-                      formData.trip_type === 'round_trip'
-                        ? 'bg-luxury-gold/15 border-luxury-gold text-luxury-gold font-semibold'
-                        : 'bg-luxury-card border-luxury-border text-luxury-textSecondary'
-                    }`}
-                  >
-                    Round-Trip
-                  </button>
-                </div>
+            {/* Trip Type Selector */}
+            <div>
+              <label className="block text-xs uppercase tracking-wider font-medium text-luxury-textSecondary mb-2">
+                Trip Type
+              </label>
+              <div className="grid grid-cols-2 gap-3 max-w-sm">
+                <button
+                  type="button"
+                  onClick={() => setFormData(p => ({ ...p, trip_type: 'one_way' }))}
+                  className={`py-2.5 px-3 rounded-xl text-xs font-medium border transition-colors min-h-[44px] ${
+                    formData.trip_type === 'one_way'
+                      ? 'bg-luxury-gold/15 border-luxury-gold text-luxury-gold font-semibold'
+                      : 'bg-luxury-card border-luxury-border text-luxury-textSecondary hover:border-luxury-border/80'
+                  }`}
+                >
+                  One-Way Transfer
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFormData(p => ({ ...p, trip_type: 'round_trip' }))}
+                  className={`py-2.5 px-3 rounded-xl text-xs font-medium border transition-colors min-h-[44px] ${
+                    formData.trip_type === 'round_trip'
+                      ? 'bg-luxury-gold/15 border-luxury-gold text-luxury-gold font-semibold'
+                      : 'bg-luxury-card border-luxury-border text-luxury-textSecondary hover:border-luxury-border/80'
+                  }`}
+                >
+                  Round-Trip
+                </button>
               </div>
+            </div>
 
+            {/* Google Places Autocomplete: Pickup Address */}
+            <div>
+              <GoogleAddressAutocomplete
+                id="pickup_location"
+                label="Pickup Address / Location *"
+                value={formData.pickup_location}
+                onChange={(val) => handleAddressChange('pickup_location', val)}
+                placeholder="e.g. 100 Hotel Rd, Hershey, PA or MDT Terminal"
+                required
+              />
+            </div>
+
+            {/* Google Places Autocomplete: Destination Address */}
+            <div>
+              <GoogleAddressAutocomplete
+                id="dropoff_location"
+                label="Destination / Drop-off Address *"
+                value={formData.dropoff_location}
+                onChange={(val) => handleAddressChange('dropoff_location', val)}
+                placeholder="e.g. PHL Airport, Midtown Manhattan, or Washington DC"
+                required
+              />
+            </div>
+
+            {/* Pickup Date & Time */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs uppercase tracking-wider font-medium text-luxury-textSecondary mb-2">
                   Pickup Date *
                 </label>
-                <input
-                  type="date"
-                  name="pickup_date"
-                  value={formData.pickup_date}
-                  onChange={handleChange}
-                  min={new Date().toISOString().split('T')[0]}
-                  required
-                  className="w-full bg-luxury-card border border-luxury-border rounded-xl px-4 py-2.5 text-sm text-luxury-textPrimary focus:outline-none focus:border-luxury-gold focus:ring-1 focus:ring-luxury-gold min-h-[44px]"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs uppercase tracking-wider font-medium text-luxury-textSecondary mb-2">
-                  Pickup Location / Address *
-                </label>
                 <div className="relative">
-                  <MapPin className="w-4 h-4 text-luxury-gold absolute left-3.5 top-3.5" />
                   <input
-                    type="text"
-                    name="pickup_location"
-                    value={formData.pickup_location}
+                    type="date"
+                    name="pickup_date"
+                    value={formData.pickup_date}
                     onChange={handleChange}
-                    placeholder="e.g. 100 Hotel Rd, Harrisburg, PA or MDT Terminal"
+                    min={new Date().toISOString().split('T')[0]}
                     required
-                    className="w-full bg-luxury-card border border-luxury-border rounded-xl pl-10 pr-4 py-2.5 text-sm text-luxury-textPrimary placeholder-luxury-textMuted focus:outline-none focus:border-luxury-gold focus:ring-1 focus:ring-luxury-gold min-h-[44px]"
+                    className="w-full bg-luxury-card border border-luxury-border rounded-xl px-4 py-2.5 text-sm text-luxury-textPrimary focus:outline-none focus:border-luxury-gold focus:ring-1 focus:ring-luxury-gold min-h-[44px]"
                   />
                 </div>
               </div>
 
-              <div>
-                <label className="block text-xs uppercase tracking-wider font-medium text-luxury-textSecondary mb-2">
-                  Destination / Drop-off *
-                </label>
-                <div className="relative">
-                  <MapPin className="w-4 h-4 text-luxury-gold absolute left-3.5 top-3.5" />
-                  <input
-                    type="text"
-                    name="dropoff_location"
-                    value={formData.dropoff_location}
-                    onChange={handleChange}
-                    placeholder="e.g. PHL Airport, Manhattan, or NYC Address"
-                    required
-                    className="w-full bg-luxury-card border border-luxury-border rounded-xl pl-10 pr-4 py-2.5 text-sm text-luxury-textPrimary placeholder-luxury-textMuted focus:outline-none focus:border-luxury-gold focus:ring-1 focus:ring-luxury-gold min-h-[44px]"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs uppercase tracking-wider font-medium text-luxury-textSecondary mb-2">
                   Pickup Time *
                 </label>
                 <div className="relative">
-                  <Clock className="w-4 h-4 text-luxury-gold absolute left-3.5 top-3.5" />
+                  <Clock className="w-4 h-4 text-luxury-gold absolute left-3.5 top-3.5 pointer-events-none" />
                   <input
                     type="time"
                     name="pickup_time"
@@ -424,48 +455,64 @@ const MultiStepBookingForm = ({ preselectedService = '', className = '' }) => {
                   />
                 </div>
               </div>
+            </div>
 
-              {formData.trip_type === 'round_trip' && (
-                <div>
-                  <label className="block text-xs uppercase tracking-wider font-medium text-luxury-textSecondary mb-2">
-                    Return Date & Time
-                  </label>
-                  <div className="grid grid-cols-2 gap-2">
+            {/* Round Trip Return Date & Time */}
+            {formData.trip_type === 'round_trip' && (
+              <div className="p-4 bg-luxury-card/60 border border-luxury-border rounded-xl space-y-3">
+                <span className="text-xs uppercase tracking-wider font-semibold text-luxury-gold block">
+                  Return Journey Information
+                </span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[11px] uppercase tracking-wider text-luxury-textSecondary mb-1.5">
+                      Return Date *
+                    </label>
                     <input
                       type="date"
                       name="return_date"
                       value={formData.return_date}
                       onChange={handleChange}
-                      className="w-full bg-luxury-card border border-luxury-border rounded-xl px-2 py-2.5 text-xs text-luxury-textPrimary focus:outline-none focus:border-luxury-gold min-h-[44px]"
+                      min={formData.pickup_date || new Date().toISOString().split('T')[0]}
+                      required
+                      className="w-full bg-luxury-card border border-luxury-border rounded-xl px-4 py-2 text-xs text-luxury-textPrimary focus:outline-none focus:border-luxury-gold min-h-[40px]"
                     />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] uppercase tracking-wider text-luxury-textSecondary mb-1.5">
+                      Return Time *
+                    </label>
                     <input
                       type="time"
                       name="return_time"
                       value={formData.return_time}
                       onChange={handleChange}
-                      className="w-full bg-luxury-card border border-luxury-border rounded-xl px-2 py-2.5 text-xs text-luxury-textPrimary focus:outline-none focus:border-luxury-gold min-h-[44px]"
+                      required
+                      className="w-full bg-luxury-card border border-luxury-border rounded-xl px-4 py-2 text-xs text-luxury-textPrimary focus:outline-none focus:border-luxury-gold min-h-[40px]"
                     />
                   </div>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         )}
 
         {/* ================= STEP 2: PASSENGERS & VEHICLE ================= */}
         {step === 2 && (
           <div className="space-y-5 animate-fade-in">
-            <h3 className="font-serif text-xl sm:text-2xl text-luxury-textPrimary mb-1">
-              Passengers & Vehicle Preference
-            </h3>
-            <p className="text-xs text-luxury-textSecondary mb-4">
-              Tell us your group size and vehicle class preference.
-            </p>
+            <div>
+              <h3 className="font-serif text-xl sm:text-2xl text-luxury-textPrimary mb-1">
+                Passenger & Vehicle Preferences
+              </h3>
+              <p className="text-xs text-luxury-textSecondary">
+                Select your group size, luggage count, and preferred vehicle class.
+              </p>
+            </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs uppercase tracking-wider font-medium text-luxury-textSecondary mb-2">
-                  Passengers
+                  Number of Passengers *
                 </label>
                 <div className="relative">
                   <Users className="w-4 h-4 text-luxury-gold absolute left-3.5 top-3.5" />
@@ -476,7 +523,9 @@ const MultiStepBookingForm = ({ preselectedService = '', className = '' }) => {
                     className="w-full bg-luxury-card border border-luxury-border rounded-xl pl-10 pr-4 py-2.5 text-sm text-luxury-textPrimary focus:outline-none focus:border-luxury-gold min-h-[44px]"
                   >
                     {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map(num => (
-                      <option key={num} value={num}>{num} {num === 1 ? 'Passenger' : 'Passengers'}</option>
+                      <option key={num} value={num} className="bg-luxury-card text-luxury-textPrimary">
+                        {num} {num === 1 ? 'Passenger' : 'Passengers'}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -484,7 +533,7 @@ const MultiStepBookingForm = ({ preselectedService = '', className = '' }) => {
 
               <div>
                 <label className="block text-xs uppercase tracking-wider font-medium text-luxury-textSecondary mb-2">
-                  Luggage Bags
+                  Number of Luggage Items *
                 </label>
                 <div className="relative">
                   <Briefcase className="w-4 h-4 text-luxury-gold absolute left-3.5 top-3.5" />
@@ -494,8 +543,10 @@ const MultiStepBookingForm = ({ preselectedService = '', className = '' }) => {
                     onChange={handleChange}
                     className="w-full bg-luxury-card border border-luxury-border rounded-xl pl-10 pr-4 py-2.5 text-sm text-luxury-textPrimary focus:outline-none focus:border-luxury-gold min-h-[44px]"
                   >
-                    {[0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12].map(num => (
-                      <option key={num} value={num}>{num} {num === 1 ? 'Bag' : 'Bags'}</option>
+                    {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14].map(num => (
+                      <option key={num} value={num} className="bg-luxury-card text-luxury-textPrimary">
+                        {num} {num === 1 ? 'Luggage Item' : 'Luggage Items'}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -504,7 +555,7 @@ const MultiStepBookingForm = ({ preselectedService = '', className = '' }) => {
 
             <div>
               <label className="block text-xs uppercase tracking-wider font-medium text-luxury-textSecondary mb-2">
-                Preferred Vehicle Class
+                Preferred Vehicle Class *
               </label>
               <select
                 name="vehicle_preference"
@@ -513,40 +564,44 @@ const MultiStepBookingForm = ({ preselectedService = '', className = '' }) => {
                 className="w-full bg-luxury-card border border-luxury-border rounded-xl px-4 py-3 text-sm text-luxury-textPrimary focus:outline-none focus:border-luxury-gold min-h-[44px]"
               >
                 {VEHICLE_PREFERENCES.map((v, i) => (
-                  <option key={i} value={v}>{v}</option>
+                  <option key={i} value={v} className="bg-luxury-card text-luxury-textPrimary">
+                    {v}
+                  </option>
                 ))}
               </select>
             </div>
 
             <div>
               <label className="block text-xs uppercase tracking-wider font-medium text-luxury-textSecondary mb-2">
-                Special Requests or Accommodations (Optional)
+                Additional Transportation Requirements / Special Requests
               </label>
               <textarea
                 name="special_requests"
                 rows="3"
                 value={formData.special_requests}
                 onChange={handleChange}
-                placeholder="e.g. Booster seat needed, quiet cabin requested, meet-and-greet inside terminal, beverages..."
+                placeholder="e.g. Child safety seat required, quiet executive cabin, meet-and-greet inside terminal, chilled sparkling water, multi-stop pickup..."
                 className="w-full bg-luxury-card border border-luxury-border rounded-xl p-3 text-xs text-luxury-textPrimary placeholder-luxury-textMuted focus:outline-none focus:border-luxury-gold"
               />
             </div>
           </div>
         )}
 
-        {/* ================= STEP 3: AIRPORT DETAILS (CONDITIONAL) ================= */}
+        {/* ================= STEP 3: AIRPORT & FLIGHT DETAILS (CONDITIONAL) ================= */}
         {step === 3 && (
           <div className="space-y-5 animate-fade-in">
-            <h3 className="font-serif text-xl sm:text-2xl text-luxury-textPrimary mb-1">
-              Airport Transfer Details
-            </h3>
-            <p className="text-xs text-luxury-textSecondary mb-4">
-              Provide your flight information for precise arrival tracking and terminal coordination.
-            </p>
+            <div>
+              <h3 className="font-serif text-xl sm:text-2xl text-luxury-textPrimary mb-1">
+                Airport & Flight Information
+              </h3>
+              <p className="text-xs text-luxury-textSecondary">
+                Flight tracking allows your chauffeur to adjust for delays or early arrivals automatically.
+              </p>
+            </div>
 
             <div>
               <label className="block text-xs uppercase tracking-wider font-medium text-luxury-textSecondary mb-2">
-                Airport *
+                Select Airport *
               </label>
               <select
                 name="airport_code"
@@ -555,15 +610,17 @@ const MultiStepBookingForm = ({ preselectedService = '', className = '' }) => {
                 className="w-full bg-luxury-card border border-luxury-border rounded-xl px-4 py-3 text-sm text-luxury-textPrimary focus:outline-none focus:border-luxury-gold min-h-[44px]"
               >
                 {AIRPORTS.map(a => (
-                  <option key={a.code} value={a.code}>{a.name}</option>
+                  <option key={a.code} value={a.code} className="bg-luxury-card text-luxury-textPrimary">
+                    {a.name}
+                  </option>
                 ))}
               </select>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs uppercase tracking-wider font-medium text-luxury-textSecondary mb-2">
-                  Transfer Type
+                  Arrival or Departure *
                 </label>
                 <div className="grid grid-cols-2 gap-2">
                   <button
@@ -575,7 +632,7 @@ const MultiStepBookingForm = ({ preselectedService = '', className = '' }) => {
                         : 'bg-luxury-card border-luxury-border text-luxury-textSecondary'
                     }`}
                   >
-                    Arrival (Pickup)
+                    Arrival (Airport Pickup)
                   </button>
                   <button
                     type="button"
@@ -586,61 +643,88 @@ const MultiStepBookingForm = ({ preselectedService = '', className = '' }) => {
                         : 'bg-luxury-card border-luxury-border text-luxury-textSecondary'
                     }`}
                   >
-                    Departure (Drop)
+                    Departure (Airport Drop)
                   </button>
                 </div>
               </div>
 
               <div>
                 <label className="block text-xs uppercase tracking-wider font-medium text-luxury-textSecondary mb-2">
-                  Airline (Optional)
+                  Airline Name
                 </label>
                 <input
                   type="text"
                   name="airline"
                   value={formData.airline}
                   onChange={handleChange}
-                  placeholder="e.g. Delta, United, American"
-                  className="w-full bg-luxury-card border border-luxury-border rounded-xl px-4 py-2.5 text-sm text-luxury-textPrimary focus:outline-none focus:border-luxury-gold min-h-[44px]"
+                  placeholder="e.g. American Airlines, Delta, United"
+                  className="w-full bg-luxury-card border border-luxury-border rounded-xl px-4 py-2.5 text-sm text-luxury-textPrimary placeholder-luxury-textMuted focus:outline-none focus:border-luxury-gold min-h-[44px]"
                 />
               </div>
             </div>
 
-            <div>
-              <label className="block text-xs uppercase tracking-wider font-medium text-luxury-textSecondary mb-2">
-                Flight Number (Optional)
-              </label>
-              <div className="relative">
-                <Plane className="w-4 h-4 text-luxury-gold absolute left-3.5 top-3.5" />
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-xs uppercase tracking-wider font-medium text-luxury-textSecondary mb-2">
+                  Flight Number
+                </label>
+                <div className="relative">
+                  <Plane className="w-4 h-4 text-luxury-gold absolute left-3.5 top-3.5" />
+                  <input
+                    type="text"
+                    name="flight_number"
+                    value={formData.flight_number}
+                    onChange={handleChange}
+                    placeholder="e.g. AA 2108"
+                    className="w-full bg-luxury-card border border-luxury-border rounded-xl pl-10 pr-4 py-2.5 text-sm text-luxury-textPrimary placeholder-luxury-textMuted focus:outline-none focus:border-luxury-gold min-h-[44px]"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs uppercase tracking-wider font-medium text-luxury-textSecondary mb-2">
+                  Flight Date (Optional)
+                </label>
                 <input
-                  type="text"
-                  name="flight_number"
-                  value={formData.flight_number}
+                  type="date"
+                  name="flight_date"
+                  value={formData.flight_date}
                   onChange={handleChange}
-                  placeholder="e.g. DL 1492 or UA 210"
-                  className="w-full bg-luxury-card border border-luxury-border rounded-xl pl-10 pr-4 py-2.5 text-sm text-luxury-textPrimary focus:outline-none focus:border-luxury-gold min-h-[44px]"
+                  className="w-full bg-luxury-card border border-luxury-border rounded-xl px-4 py-2.5 text-xs text-luxury-textPrimary focus:outline-none focus:border-luxury-gold min-h-[44px]"
                 />
               </div>
-              <p className="text-[11px] text-luxury-textMuted mt-1.5">
-                Our operations team reviews flight timing to accommodate any inbound delays.
-              </p>
+
+              <div>
+                <label className="block text-xs uppercase tracking-wider font-medium text-luxury-textSecondary mb-2">
+                  Flight Scheduled Time (Optional)
+                </label>
+                <input
+                  type="time"
+                  name="flight_time"
+                  value={formData.flight_time}
+                  onChange={handleChange}
+                  className="w-full bg-luxury-card border border-luxury-border rounded-xl px-4 py-2.5 text-xs text-luxury-textPrimary focus:outline-none focus:border-luxury-gold min-h-[44px]"
+                />
+              </div>
             </div>
           </div>
         )}
 
-        {/* ================= STEP 4: CONTACT INFORMATION ================= */}
+        {/* ================= STEP 4: CUSTOMER CONTACT DETAILS ================= */}
         {step === 4 && (
           <div className="space-y-5 animate-fade-in">
-            <h3 className="font-serif text-xl sm:text-2xl text-luxury-textPrimary mb-1">
-              Contact & Quotation Details
-            </h3>
-            <p className="text-xs text-luxury-textSecondary mb-4">
-              Where should we send your quote and itinerary acknowledgment?
-            </p>
+            <div>
+              <h3 className="font-serif text-xl sm:text-2xl text-luxury-textPrimary mb-1">
+                Customer & Contact Details
+              </h3>
+              <p className="text-xs text-luxury-textSecondary">
+                Where should dispatch deliver your personalized quotation and itinerary updates?
+              </p>
+            </div>
 
             <div>
               <label className="block text-xs uppercase tracking-wider font-medium text-luxury-textSecondary mb-2">
-                Primary Passenger / Contact Name *
+                Full Name *
               </label>
               <input
                 type="text"
@@ -649,7 +733,7 @@ const MultiStepBookingForm = ({ preselectedService = '', className = '' }) => {
                 onChange={handleChange}
                 placeholder="e.g. Jonathan Vance"
                 required
-                className="w-full bg-luxury-card border border-luxury-border rounded-xl px-4 py-2.5 text-sm text-luxury-textPrimary focus:outline-none focus:border-luxury-gold min-h-[44px]"
+                className="w-full bg-luxury-card border border-luxury-border rounded-xl px-4 py-2.5 text-sm text-luxury-textPrimary placeholder-luxury-textMuted focus:outline-none focus:border-luxury-gold min-h-[44px]"
               />
             </div>
 
@@ -665,13 +749,13 @@ const MultiStepBookingForm = ({ preselectedService = '', className = '' }) => {
                   onChange={handleChange}
                   placeholder="client@executive.com"
                   required
-                  className="w-full bg-luxury-card border border-luxury-border rounded-xl px-4 py-2.5 text-sm text-luxury-textPrimary focus:outline-none focus:border-luxury-gold min-h-[44px]"
+                  className="w-full bg-luxury-card border border-luxury-border rounded-xl px-4 py-2.5 text-sm text-luxury-textPrimary placeholder-luxury-textMuted focus:outline-none focus:border-luxury-gold min-h-[44px]"
                 />
               </div>
 
               <div>
                 <label className="block text-xs uppercase tracking-wider font-medium text-luxury-textSecondary mb-2">
-                  Phone Number (SMS / Calls) *
+                  Telephone Number (Direct / Mobile) *
                 </label>
                 <input
                   type="tel"
@@ -680,84 +764,217 @@ const MultiStepBookingForm = ({ preselectedService = '', className = '' }) => {
                   onChange={handleChange}
                   placeholder="+1 (717) 555-0199"
                   required
-                  className="w-full bg-luxury-card border border-luxury-border rounded-xl px-4 py-2.5 text-sm text-luxury-textPrimary focus:outline-none focus:border-luxury-gold min-h-[44px]"
+                  className="w-full bg-luxury-card border border-luxury-border rounded-xl px-4 py-2.5 text-sm text-luxury-textPrimary placeholder-luxury-textMuted focus:outline-none focus:border-luxury-gold min-h-[44px]"
                 />
               </div>
             </div>
 
             <div>
               <label className="block text-xs uppercase tracking-wider font-medium text-luxury-textSecondary mb-2">
-                Additional Instructions for Dispatch (Optional)
+                Special Requests or Additional Messages for Dispatch
               </label>
               <textarea
                 name="customer_notes"
-                rows="2"
+                rows="3"
                 value={formData.customer_notes}
                 onChange={handleChange}
-                placeholder="Any gate codes, corporate billing references, or specific timing notes..."
+                placeholder="Any special handling, preferred contact method, gate access instructions, or corporate billing requirements..."
                 className="w-full bg-luxury-card border border-luxury-border rounded-xl p-3 text-xs text-luxury-textPrimary placeholder-luxury-textMuted focus:outline-none focus:border-luxury-gold"
               />
             </div>
           </div>
         )}
 
-        {/* ================= STEP 5: REVIEW & CONFIRM ================= */}
+        {/* ================= STEP 5: BOOKING SUMMARY & REVIEW ================= */}
         {step === 5 && (
-          <div className="space-y-5 animate-fade-in">
-            <h3 className="font-serif text-xl sm:text-2xl text-luxury-textPrimary mb-1">
-              Review Your Quote Request
-            </h3>
-            <p className="text-xs text-luxury-textSecondary mb-4">
-              Please verify your journey details before submitting to dispatch.
-            </p>
+          <div className="space-y-6 animate-fade-in">
+            <div>
+              <h3 className="font-serif text-xl sm:text-2xl text-luxury-textPrimary mb-1">
+                Review Your Journey Details
+              </h3>
+              <p className="text-xs text-luxury-textSecondary">
+                Please review your submitted itinerary before sending to dispatch. Click "Edit" on any section to make adjustments.
+              </p>
+            </div>
 
-            <div className="bg-luxury-card border border-luxury-border rounded-xl p-5 space-y-3 text-xs">
-              <div className="grid grid-cols-2 gap-2 border-b border-luxury-border/60 pb-2.5">
-                <span className="text-luxury-textMuted">Service:</span>
-                <span className="font-semibold text-luxury-gold text-right">{formData.service_type}</span>
+            {/* Section 1 Review: Journey */}
+            <div className="bg-luxury-card border border-luxury-border rounded-xl p-4 space-y-2.5">
+              <div className="flex items-center justify-between border-b border-luxury-border/60 pb-2">
+                <span className="text-xs uppercase tracking-wider font-semibold text-luxury-gold flex items-center gap-1.5">
+                  <MapPin className="w-3.5 h-3.5" /> Journey & Itinerary
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setStep(1)}
+                  className="text-[11px] text-luxury-gold hover:underline flex items-center gap-1"
+                >
+                  <Edit3 className="w-3 h-3" /> Edit
+                </button>
               </div>
-              <div className="grid grid-cols-2 gap-2 border-b border-luxury-border/60 pb-2.5">
-                <span className="text-luxury-textMuted">Pickup:</span>
-                <span className="font-medium text-luxury-textPrimary text-right">{formData.pickup_location}</span>
-              </div>
-              <div className="grid grid-cols-2 gap-2 border-b border-luxury-border/60 pb-2.5">
-                <span className="text-luxury-textMuted">Destination:</span>
-                <span className="font-medium text-luxury-textPrimary text-right">{formData.dropoff_location}</span>
-              </div>
-              <div className="grid grid-cols-2 gap-2 border-b border-luxury-border/60 pb-2.5">
-                <span className="text-luxury-textMuted">Date & Time:</span>
-                <span className="font-medium text-luxury-textPrimary text-right">{formData.pickup_date} at {formData.pickup_time}</span>
-              </div>
-              <div className="grid grid-cols-2 gap-2 border-b border-luxury-border/60 pb-2.5">
-                <span className="text-luxury-textMuted">Vehicle & Group:</span>
-                <span className="font-medium text-luxury-textPrimary text-right">{formData.passengers} Passengers / {formData.luggage} Bags</span>
-              </div>
-              {formData.airport_code && (
-                <div className="grid grid-cols-2 gap-2 border-b border-luxury-border/60 pb-2.5">
-                  <span className="text-luxury-textMuted">Airport / Flight:</span>
-                  <span className="font-medium text-luxury-textPrimary text-right">{formData.airport_code} {formData.flight_number || ''}</span>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                <div>
+                  <span className="text-luxury-textMuted block text-[11px]">Service Category:</span>
+                  <span className="font-medium text-luxury-textPrimary">{formData.service_type}</span>
                 </div>
-              )}
-              <div className="grid grid-cols-2 gap-2 pt-1">
-                <span className="text-luxury-textMuted">Client:</span>
-                <span className="font-semibold text-luxury-textPrimary text-right">{formData.full_name} ({formData.phone})</span>
+                <div>
+                  <span className="text-luxury-textMuted block text-[11px]">Trip Type:</span>
+                  <span className="font-medium text-luxury-textPrimary capitalize">
+                    {formData.trip_type === 'round_trip' ? 'Round-Trip' : 'One-Way'}
+                  </span>
+                </div>
+                <div className="sm:col-span-2">
+                  <span className="text-luxury-textMuted block text-[11px]">Pickup Location:</span>
+                  <span className="font-medium text-luxury-textPrimary">{formData.pickup_location}</span>
+                </div>
+                <div className="sm:col-span-2">
+                  <span className="text-luxury-textMuted block text-[11px]">Destination:</span>
+                  <span className="font-medium text-luxury-textPrimary">{formData.dropoff_location}</span>
+                </div>
+                <div>
+                  <span className="text-luxury-textMuted block text-[11px]">Pickup Date & Time:</span>
+                  <span className="font-medium text-luxury-textPrimary">{formData.pickup_date} at {formData.pickup_time}</span>
+                </div>
+                {formData.trip_type === 'round_trip' && (
+                  <div>
+                    <span className="text-luxury-textMuted block text-[11px]">Return Schedule:</span>
+                    <span className="font-medium text-luxury-textPrimary">{formData.return_date} at {formData.return_time}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Section 2 Review: Passengers & Vehicle */}
+            <div className="bg-luxury-card border border-luxury-border rounded-xl p-4 space-y-2.5">
+              <div className="flex items-center justify-between border-b border-luxury-border/60 pb-2">
+                <span className="text-xs uppercase tracking-wider font-semibold text-luxury-gold flex items-center gap-1.5">
+                  <Car className="w-3.5 h-3.5" /> Vehicle & Passengers
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setStep(2)}
+                  className="text-[11px] text-luxury-gold hover:underline flex items-center gap-1"
+                >
+                  <Edit3 className="w-3 h-3" /> Edit
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                <div>
+                  <span className="text-luxury-textMuted block text-[11px]">Preferred Vehicle:</span>
+                  <span className="font-medium text-luxury-textPrimary">{formData.vehicle_preference}</span>
+                </div>
+                <div>
+                  <span className="text-luxury-textMuted block text-[11px]">Capacity Requested:</span>
+                  <span className="font-medium text-luxury-textPrimary">
+                    {formData.passengers} Passengers &bull; {formData.luggage} Luggage
+                  </span>
+                </div>
+                {formData.special_requests && (
+                  <div className="sm:col-span-2">
+                    <span className="text-luxury-textMuted block text-[11px]">Special Requests:</span>
+                    <span className="font-medium text-luxury-textSecondary">{formData.special_requests}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Section 3 Review: Airport & Flight (if applicable) */}
+            {isAirportService && (
+              <div className="bg-luxury-card border border-luxury-border rounded-xl p-4 space-y-2.5">
+                <div className="flex items-center justify-between border-b border-luxury-border/60 pb-2">
+                  <span className="text-xs uppercase tracking-wider font-semibold text-luxury-gold flex items-center gap-1.5">
+                    <Plane className="w-3.5 h-3.5" /> Airport & Flight Details
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setStep(3)}
+                    className="text-[11px] text-luxury-gold hover:underline flex items-center gap-1"
+                  >
+                    <Edit3 className="w-3 h-3" /> Edit
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                  <div>
+                    <span className="text-luxury-textMuted block text-[11px]">Airport:</span>
+                    <span className="font-medium text-luxury-textPrimary">{formData.airport_code}</span>
+                  </div>
+                  <div>
+                    <span className="text-luxury-textMuted block text-[11px]">Transfer Type:</span>
+                    <span className="font-medium text-luxury-textPrimary capitalize">
+                      {formData.flight_type === 'arrival' ? 'Arrival (Pickup)' : 'Departure (Drop)'}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-luxury-textMuted block text-[11px]">Airline & Flight:</span>
+                    <span className="font-medium text-luxury-textPrimary">
+                      {formData.airline || '—'} {formData.flight_number ? `(${formData.flight_number})` : ''}
+                    </span>
+                  </div>
+                  {(formData.flight_date || formData.flight_time) && (
+                    <div>
+                      <span className="text-luxury-textMuted block text-[11px]">Flight Timing:</span>
+                      <span className="font-medium text-luxury-textPrimary">
+                        {formData.flight_date} {formData.flight_time}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Section 4 Review: Customer Contact */}
+            <div className="bg-luxury-card border border-luxury-border rounded-xl p-4 space-y-2.5">
+              <div className="flex items-center justify-between border-b border-luxury-border/60 pb-2">
+                <span className="text-xs uppercase tracking-wider font-semibold text-luxury-gold flex items-center gap-1.5">
+                  <ShieldCheck className="w-3.5 h-3.5" /> Contact Details
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setStep(4)}
+                  className="text-[11px] text-luxury-gold hover:underline flex items-center gap-1"
+                >
+                  <Edit3 className="w-3 h-3" /> Edit
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                <div>
+                  <span className="text-luxury-textMuted block text-[11px]">Client Name:</span>
+                  <span className="font-medium text-luxury-textPrimary">{formData.full_name}</span>
+                </div>
+                <div>
+                  <span className="text-luxury-textMuted block text-[11px]">Telephone:</span>
+                  <span className="font-medium text-luxury-textPrimary">{formData.phone}</span>
+                </div>
+                <div className="sm:col-span-2">
+                  <span className="text-luxury-textMuted block text-[11px]">Email for Quote:</span>
+                  <span className="font-medium text-luxury-textPrimary">{formData.email}</span>
+                </div>
+                {formData.customer_notes && (
+                  <div className="sm:col-span-2">
+                    <span className="text-luxury-textMuted block text-[11px]">Customer Notes:</span>
+                    <span className="font-medium text-luxury-textSecondary">{formData.customer_notes}</span>
+                  </div>
+                )}
               </div>
             </div>
 
             {/* Privacy & Quotation Reassurance Notice */}
-            <div className="bg-luxury-elevated/80 border-l-2 border-luxury-gold p-4 rounded-r-xl text-xs space-y-1.5">
+            <div className="bg-luxury-elevated/90 border-l-2 border-luxury-gold p-4 rounded-r-xl text-xs space-y-1.5">
               <div className="flex items-center gap-1.5 font-semibold text-luxury-textPrimary">
                 <ShieldCheck className="w-4 h-4 text-luxury-gold" />
                 <span>Complimentary, No-Obligation Quote Request</span>
               </div>
               <p className="text-luxury-textSecondary leading-relaxed">
-                By clicking "Submit Quote Request", you authorize our executive team to review your route and deliver a customized quote. No automated credit card charges or commitments are made at this step.
+                By submitting this request, you authorize our dispatch operations to calculate a personalized, all-inclusive quotation based on your itinerary. This is an inquiry request and does not incur any automated fees or credit card charges.
               </p>
             </div>
           </div>
         )}
 
-        {/* Navigation Buttons */}
+        {/* ================= NAVIGATION BUTTONS ================= */}
         <div className="mt-8 pt-6 border-t border-luxury-border flex items-center justify-between gap-4">
           {step > 1 ? (
             <button
@@ -772,7 +989,7 @@ const MultiStepBookingForm = ({ preselectedService = '', className = '' }) => {
             <div />
           )}
 
-          {step < (formData.service_type === "Airport Transportation" ? 5 : 4) ? (
+          {step < totalSteps ? (
             <Button
               type="button"
               variant="primary"
@@ -787,7 +1004,7 @@ const MultiStepBookingForm = ({ preselectedService = '', className = '' }) => {
               variant="primary"
               onClick={handleSubmit}
               loading={loading}
-              className="tracking-wider text-xs uppercase font-bold"
+              className="tracking-wider text-xs uppercase font-bold px-6"
             >
               Submit Quote Request
             </Button>
@@ -799,4 +1016,3 @@ const MultiStepBookingForm = ({ preselectedService = '', className = '' }) => {
 };
 
 export default MultiStepBookingForm;
-

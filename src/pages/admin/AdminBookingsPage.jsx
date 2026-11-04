@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Search, Filter, Eye, Trash2, Calendar, 
-  MapPin, Phone, Mail, RefreshCw, AlertCircle
+  MapPin, Phone, Mail, RefreshCw, AlertCircle, X, Car
 } from 'lucide-react';
 import Badge from '../../components/common/Badge';
 import Button from '../../components/common/Button';
@@ -10,20 +10,20 @@ import { getBookings, deleteBooking } from '../../services/api';
 
 const STATUS_FILTERS = [
   "All",
-  "New",
-  "Reviewing",
+  "New Request",
+  "Under Review",
   "Quote Sent",
-  "Awaiting Response",
+  "Awaiting Customer Response",
   "Confirmed",
   "Completed",
-  "Cancelled",
-  "Rejected"
+  "Cancelled"
 ];
 
 const AdminBookingsPage = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState("All");
+  const [dateFilter, setDateFilter] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedBooking, setSelectedBooking] = useState(null);
 
@@ -32,9 +32,10 @@ const AdminBookingsPage = () => {
     try {
       const params = {};
       if (statusFilter && statusFilter !== "All") params.status = statusFilter;
+      if (dateFilter) params.date = dateFilter;
       if (searchTerm.trim()) params.search = searchTerm.trim();
       const data = await getBookings(params);
-      setBookings(data);
+      setBookings(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("Failed to fetch bookings:", err);
     } finally {
@@ -44,16 +45,25 @@ const AdminBookingsPage = () => {
 
   useEffect(() => {
     loadBookings();
-  }, [statusFilter]);
+  }, [statusFilter, dateFilter]);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     loadBookings();
   };
 
+  const handleClearFilters = () => {
+    setStatusFilter("All");
+    setDateFilter("");
+    setSearchTerm("");
+    setTimeout(() => loadBookings(), 0);
+  };
+
   const handleDelete = async (id, e) => {
-    e.stopPropagation();
-    if (window.confirm("Are you sure you want to permanently remove this booking enquiry record?")) {
+    if (e) e.stopPropagation();
+    const target = bookings.find(b => b.id === id);
+    const ref = target ? target.reference_code : id;
+    if (window.confirm(`Are you sure you want to permanently delete booking enquiry ${ref}?`)) {
       try {
         await deleteBooking(id);
         setBookings(prev => prev.filter(b => b.id !== id));
@@ -64,28 +74,55 @@ const AdminBookingsPage = () => {
     }
   };
 
+  const handleBookingUpdated = (updated) => {
+    setBookings(prev => prev.map(b => (b.id === updated.id ? updated : b)));
+    setSelectedBooking(updated);
+  };
+
+  const handleBookingDeleted = (deletedId) => {
+    setBookings(prev => prev.filter(b => b.id !== deletedId));
+    setSelectedBooking(null);
+  };
+
+  const hasActiveFilters = statusFilter !== "All" || Boolean(dateFilter) || Boolean(searchTerm);
+
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-luxury-border">
         <div>
           <span className="text-[10px] uppercase tracking-widest text-luxury-gold font-bold block mb-1">
-            Dispatch Management
+            Dispatch Operations
           </span>
           <h1 className="font-serif text-2xl sm:text-3xl font-normal text-luxury-textPrimary">
-            Booking & Quotation Enquiries
+            Booking & Quote Requests
           </h1>
+          <p className="text-xs text-luxury-textSecondary mt-1">
+            Review customer journey itineraries, calculate quotations, and manage reservations.
+          </p>
         </div>
 
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={loadBookings}
-          loading={loading}
-          className="text-xs self-start sm:self-auto"
-        >
-          <RefreshCw className="w-3.5 h-3.5 mr-1.5" /> Refresh Enquiries
-        </Button>
+        <div className="flex items-center gap-2">
+          {hasActiveFilters && (
+            <button
+              onClick={handleClearFilters}
+              type="button"
+              className="inline-flex items-center gap-1 px-3 py-2 rounded-lg bg-luxury-card border border-luxury-border text-xs text-luxury-textSecondary hover:text-luxury-textPrimary transition-colors"
+            >
+              <X className="w-3.5 h-3.5" /> Clear Filters
+            </button>
+          )}
+
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={loadBookings}
+            loading={loading}
+            className="text-xs"
+          >
+            <RefreshCw className="w-3.5 h-3.5 mr-1.5" /> Refresh List
+          </Button>
+        </div>
       </div>
 
       {/* Filter and Search Bar */}
@@ -102,39 +139,60 @@ const AdminBookingsPage = () => {
           />
         </form>
 
-        {/* Status Filters */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
-          <span className="text-xs text-luxury-textMuted whitespace-nowrap hidden sm:inline">
-            Status:
-          </span>
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="bg-luxury-card border border-luxury-border rounded-xl px-3 py-2 text-xs text-luxury-textPrimary focus:outline-none focus:border-luxury-gold min-h-[40px]"
-          >
-            {STATUS_FILTERS.map(st => (
-              <option key={st} value={st}>{st}</option>
-            ))}
-          </select>
+        {/* Date Filter & Status Dropdown */}
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Date Filter */}
+          <div className="flex items-center gap-1.5">
+            <span className="text-xs text-luxury-textMuted whitespace-nowrap hidden sm:inline">
+              Date:
+            </span>
+            <div className="relative">
+              <input
+                type="date"
+                value={dateFilter}
+                onChange={(e) => setDateFilter(e.target.value)}
+                className="bg-luxury-card border border-luxury-border rounded-xl px-3 py-2 text-xs text-luxury-textPrimary focus:outline-none focus:border-luxury-gold min-h-[40px]"
+              />
+            </div>
+          </div>
+
+          {/* Status Filter */}
+          <div className="flex items-center gap-1.5">
+            <span className="text-xs text-luxury-textMuted whitespace-nowrap hidden sm:inline">
+              Status:
+            </span>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="bg-luxury-card border border-luxury-border rounded-xl px-3 py-2 text-xs text-luxury-textPrimary focus:outline-none focus:border-luxury-gold min-h-[40px]"
+            >
+              {STATUS_FILTERS.map(st => (
+                <option key={st} value={st}>{st}</option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 
       {/* Booking List Container */}
       {bookings.length === 0 ? (
         <div className="bg-luxury-surface border border-luxury-border rounded-2xl p-12 text-center text-xs text-luxury-textMuted shadow-luxury">
-          No booking enquiries match your selected filters.
+          {hasActiveFilters ? "No booking requests match your search or filter criteria." : "No booking enquiries in dispatch log."}
         </div>
       ) : (
         <>
-          {/* Desktop Table View (Hidden on mobile) */}
+          {/* Desktop Table View */}
           <div className="hidden lg:block bg-luxury-surface border border-luxury-border rounded-2xl overflow-hidden shadow-luxury">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
                 <tr className="bg-luxury-card/80 border-b border-luxury-border text-luxury-textSecondary uppercase tracking-wider font-semibold">
                   <th className="py-3.5 px-4">Ref Code</th>
-                  <th className="py-3.5 px-4">Client</th>
-                  <th className="py-3.5 px-4">Service & Route</th>
-                  <th className="py-3.5 px-4">Date & Time</th>
+                  <th className="py-3.5 px-4">Customer Name</th>
+                  <th className="py-3.5 px-4">Pickup Location</th>
+                  <th className="py-3.5 px-4">Destination</th>
+                  <th className="py-3.5 px-4">Travel Date</th>
+                  <th className="py-3.5 px-4">Vehicle Preference</th>
+                  <th className="py-3.5 px-4">Submission Date</th>
                   <th className="py-3.5 px-4">Status</th>
                   <th className="py-3.5 px-4 text-right">Actions</th>
                 </tr>
@@ -155,23 +213,35 @@ const AdminBookingsPage = () => {
                       <div className="font-semibold text-luxury-textPrimary">{booking.full_name}</div>
                       <div className="text-luxury-textMuted text-[11px]">{booking.phone}</div>
                     </td>
-                    <td className="py-3.5 px-4 max-w-xs">
-                      <div className="font-medium text-luxury-textPrimary">{booking.service_type}</div>
-                      <div className="text-[11px] text-luxury-textMuted truncate">
-                        {booking.pickup_location} &rarr; {booking.dropoff_location}
+                    <td className="py-3.5 px-4 max-w-[160px]">
+                      <div className="text-luxury-textPrimary font-medium truncate" title={booking.pickup_location}>
+                        {booking.pickup_location}
                       </div>
                     </td>
-                    <td className="py-3.5 px-4">
+                    <td className="py-3.5 px-4 max-w-[160px]">
+                      <div className="text-luxury-textPrimary font-medium truncate" title={booking.dropoff_location}>
+                        {booking.dropoff_location}
+                      </div>
+                    </td>
+                    <td className="py-3.5 px-4 whitespace-nowrap">
                       <div className="text-luxury-textPrimary font-medium">{booking.pickup_date}</div>
                       <div className="text-[11px] text-luxury-textMuted">{booking.pickup_time}</div>
                     </td>
-                    <td className="py-3.5 px-4">
+                    <td className="py-3.5 px-4 max-w-[140px]">
+                      <div className="text-luxury-gold font-medium truncate" title={booking.vehicle_preference}>
+                        {booking.vehicle_preference || 'Executive Sedan'}
+                      </div>
+                    </td>
+                    <td className="py-3.5 px-4 whitespace-nowrap text-luxury-textSecondary text-[11px]">
+                      {new Date(booking.created_at).toLocaleDateString()}
+                    </td>
+                    <td className="py-3.5 px-4 whitespace-nowrap">
                       <Badge variant={booking.status} size="xs">
                         {booking.status}
                       </Badge>
                     </td>
                     <td className="py-3.5 px-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
+                      <div className="flex items-center justify-end gap-1.5">
                         <button
                           type="button"
                           onClick={(e) => {
@@ -179,7 +249,7 @@ const AdminBookingsPage = () => {
                             setSelectedBooking(booking);
                           }}
                           className="p-1.5 rounded-lg bg-luxury-elevated text-luxury-textSecondary hover:text-luxury-gold transition-colors"
-                          title="Open Details"
+                          title="View Complete Details"
                         >
                           <Eye className="w-4 h-4" />
                         </button>
@@ -187,7 +257,7 @@ const AdminBookingsPage = () => {
                           type="button"
                           onClick={(e) => handleDelete(booking.id, e)}
                           className="p-1.5 rounded-lg bg-luxury-elevated text-luxury-textSecondary hover:text-red-400 transition-colors"
-                          title="Delete Record"
+                          title="Delete Request"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -199,7 +269,7 @@ const AdminBookingsPage = () => {
             </table>
           </div>
 
-          {/* Mobile & Tablet Responsive Stacked Card View (Flawless UX on phones) */}
+          {/* Mobile & Tablet Responsive Stacked Card View */}
           <div className="lg:hidden space-y-3">
             {bookings.map((booking) => (
               <div
@@ -226,20 +296,21 @@ const AdminBookingsPage = () => {
                 </div>
 
                 <div className="text-xs bg-luxury-card p-2.5 rounded-lg space-y-1">
-                  <div className="font-medium text-luxury-gold">
-                    {booking.service_type}
+                  <div className="font-medium text-luxury-gold flex items-center gap-1.5">
+                    <Car className="w-3.5 h-3.5 shrink-0" />
+                    <span>{booking.vehicle_preference || booking.service_type}</span>
                   </div>
-                  <div className="text-luxury-textMuted text-[11px]">
-                    From: {booking.pickup_location}
+                  <div className="text-luxury-textMuted text-[11px] truncate">
+                    <strong>Pickup:</strong> {booking.pickup_location}
                   </div>
-                  <div className="text-luxury-textMuted text-[11px]">
-                    To: {booking.dropoff_location}
+                  <div className="text-luxury-textMuted text-[11px] truncate">
+                    <strong>Destination:</strong> {booking.dropoff_location}
                   </div>
                 </div>
 
                 <div className="flex items-center justify-between text-[11px] pt-1">
                   <span className="text-luxury-textSecondary">
-                    {booking.pickup_date} at {booking.pickup_time}
+                    <strong>Travel:</strong> {booking.pickup_date} at {booking.pickup_time}
                   </span>
 
                   <div className="flex items-center gap-2">
@@ -249,14 +320,16 @@ const AdminBookingsPage = () => {
                         e.stopPropagation();
                         setSelectedBooking(booking);
                       }}
-                      className="px-2.5 py-1 rounded bg-luxury-elevated text-luxury-gold text-xs font-semibold"
+                      className="p-1.5 rounded-lg bg-luxury-elevated text-luxury-textSecondary hover:text-luxury-gold transition-colors"
+                      title="View Details"
                     >
-                      Inspect
+                      <Eye className="w-3.5 h-3.5" />
                     </button>
                     <button
                       type="button"
                       onClick={(e) => handleDelete(booking.id, e)}
-                      className="p-1 text-red-400 hover:text-red-300"
+                      className="p-1.5 rounded-lg bg-luxury-elevated text-luxury-textSecondary hover:text-red-400 transition-colors"
+                      title="Delete Record"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -268,15 +341,13 @@ const AdminBookingsPage = () => {
         </>
       )}
 
-      {/* Detail & Dispatch Modal */}
+      {/* Booking Detail Modal */}
       {selectedBooking && (
         <BookingDetailModal
           booking={selectedBooking}
           onClose={() => setSelectedBooking(null)}
-          onUpdated={() => {
-            setSelectedBooking(null);
-            loadBookings();
-          }}
+          onUpdated={handleBookingUpdated}
+          onDeleted={handleBookingDeleted}
         />
       )}
     </div>
@@ -284,4 +355,3 @@ const AdminBookingsPage = () => {
 };
 
 export default AdminBookingsPage;
-

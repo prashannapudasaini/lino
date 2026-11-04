@@ -1,0 +1,42 @@
+[
+  {
+    "id": "email-1793684459837-107",
+    "type": "customer_confirmation",
+    "to": "g.dupont@executive-advisors.com",
+    "from": "\"Everest Executive Limo\" <concierge@everestlimo.com>",
+    "subject": "Your Quote Request [EEL-2026-86886] — Everest Executive Limo",
+    "reference_code": "EEL-2026-86886",
+    "timestamp": "2026-11-03T05:40:59.837Z",
+    "status": "sent"
+  },
+  {
+    "id": "email-1793684459834-18",
+    "type": "business_notification",
+    "to": "booking@everestlimo.com",
+    "from": "\"Everest Executive Limo Dispatch\" <dispatch@everestlimo.com>",
+    "subject": "[NEW REQUEST] EEL-2026-86886 — Genevieve Du Pont (Airport Transportation)",
+    "reference_code": "EEL-2026-86886",
+    "timestamp": "2026-11-03T05:40:59.834Z",
+    "status": "sent"
+  },
+  {
+    "id": "email-1793684348686-92",
+    "type": "customer_confirmation",
+    "to": "a.hamilton@treasury-partners.com",
+    "from": "\"Everest Executive Limo\" <concierge@everestlimo.com>",
+    "subject": "Your Quote Request [EEL-2026-29338] — Everest Executive Limo",
+    "reference_code": "EEL-2026-29338",
+    "timestamp": "2026-11-03T05:39:08.686Z",
+    "status": "sent"
+  },
+  {
+    "id": "email-1793684348682-690",
+    "type": "business_notification",
+    "to": "booking@everestlimo.com",
+    "from": "\"Everest Executive Limo Dispatch\" <dispatch@everestlimo.com>",
+    "subject": "[NEW REQUEST] EEL-2026-29338 — Alexander Hamilton (Airport Transportation)",
+    "reference_code": "EEL-2026-29338",
+    "timestamp": "2026-11-03T05:39:08.682Z",
+    "status": "sent"
+  }
+]
